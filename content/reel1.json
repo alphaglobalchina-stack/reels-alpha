@@ -1,0 +1,33 @@
+{
+  "reel": "reel1",
+  "timing": [2.5, 2.5, 8, 4, 3],
+  "sfx": true,
+  "music": true,
+  "musicVolume": 0.35,
+  "brand": {
+    "wordmark": "ALPHA",
+    "subtitle": "ألفا جلوبال — قوانغتشو، الصين"
+  },
+  "headline": ["شريكك الموثوق", "داخل الصين"],
+  "values": [
+    {"icon": "factory", "text": "نبحث لك عن أفضل المصانع والموردين"},
+    {"icon": "handshake", "text": "نتفاوض ونشتري نيابةً عنك بأفضل سعر"},
+    {"icon": "shipPlane", "text": "نشحن بحراً وجواً إلى الشرق الأوسط"}
+  ],
+  "map": {
+    "caption": ["من قوانغتشو…", "إلى باب مستودعك"],
+    "origin": "قوانغتشو",
+    "destination": "الخليج"
+  },
+  "cta": {
+    "headline": "راسلنا على واتساب الآن",
+    "founder": "رياض — المؤسس",
+    "contacts": [
+      {"icon": "whatsapp", "label": "واتساب / WeChat", "value": "+86 186 6469 7193"},
+      {"icon": "mail", "value": "info@alphaglobalcargo.com"},
+      {"icon": "globe", "value": "alphaglobalcargo.com"},
+      {"icon": "instagram", "label": "Instagram", "value": "@alpha.global.china"}
+    ],
+    "legal": "Guangzhou Alpha Global Trading Co., Ltd — 广州突冠国际贸易有限公司"
+  }
+}
