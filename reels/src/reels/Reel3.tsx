@@ -691,10 +691,45 @@ const k5: Key[] = [
   {t: 0.6, x: 160, y: 330, z: -520, rx: 2, ry: -3},
   {t: 1.6, x: 20, y: 40, z: 180, rx: 4, ry: 7, rz: -1.5},
   {t: 2.7, x: 0, y: -10, z: 40, rx: 0, ry: 0, rz: 0},
-  {t: 4.5, x: 0, y: -20, z: -110, rx: 0, ry: 0, rz: 0},
+  {t: 3.5, x: 0, y: -25, z: -60, rx: 0, ry: 0, rz: 0},
+  {t: 4.45, x: 0, y: 980, z: 60, rx: -3, ry: 0, rz: 0},
+  {t: 6.5, x: 0, y: 1020, z: -40, rx: 0, ry: 0, rz: 0},
 ];
-const cam5 = (t: number) => ({...withFocus(camAt(k5, t), t < 1.2 ? BTN : [0, 0, 0]), aperture: 0.006});
 const FINAL = cfg.finalHit - S.end[0];
+const CRANE = cfg.contactCrane - S.end[0];
+const CARD_Y = 1180;
+const cam5 = (t: number) => ({...withFocus(camAt(k5, t), t < 1.2 ? BTN : t < CRANE + 0.4 ? [0, 0, 0] : [0, CARD_Y, 0]), aperture: 0.006});
+
+/** The contact card the camera cranes down to: every way to reach the company, one row each. */
+const ContactCard: React.FC<{t: number}> = ({t}) => {
+  const card = back(p01(t, CRANE + 0.35, 0.7));
+  return (
+    <div
+      dir="rtl"
+      style={{
+        width: 920, padding: '40px 54px', borderRadius: 30, background: 'rgba(23,40,65,.88)', border: '1.5px solid rgba(255,255,255,.14)',
+        boxShadow: '0 40px 100px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08)', opacity: clamp01(card * 1.5),
+        transform: `scale(${0.9 + 0.1 * card}) translateY(${(1 - card) * 60}px)`, display: 'flex', flexDirection: 'column', gap: 6,
+      }}
+    >
+      {cfg.contacts.map((c, i) => {
+        const e = back(p01(t, CRANE + 0.6 + i * 0.13, 0.55));
+        const ic = back(p01(t, CRANE + 0.55 + i * 0.13, 0.45));
+        return (
+          <div key={i} style={{display: 'flex', alignItems: 'center', gap: 30, height: 112, opacity: clamp01(e * 2), transform: `translateX(${(1 - e) * -90}px)`, borderTop: i ? '1px solid rgba(255,255,255,.08)' : undefined}}>
+            <div style={{width: 84, height: 84, borderRadius: '50%', background: C.goldL, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', transform: `scale(${ic})`}}>
+              <Icon name={c.icon} size={44} color={C.goldD} stroke={1.9} />
+            </div>
+            <div style={{display: 'flex', flexDirection: 'column', lineHeight: 1.15}}>
+              <span style={{fontFamily: AR, fontWeight: 500, fontSize: 30, color: C.kick}}>{c.label}</span>
+              <span dir="ltr" style={{fontFamily: LAT, fontWeight: 600, fontSize: 46, color: C.white, unicodeBidi: 'isolate', textAlign: 'right', letterSpacing: '0.01em'}}>{c.value}</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const Shot5: React.FC = () => {
   const t = useT();
@@ -710,33 +745,44 @@ const Shot5: React.FC = () => {
         <L p={[0, 80, -1100]} dof={false} opacity={p01(t, 0.5, 1.2)}>
           <div style={{fontFamily: LAT, fontWeight: 700, fontSize: 520, letterSpacing: '0.06em', color: 'transparent', WebkitTextStroke: '2px rgba(232,199,102,.16)', transform: `translateX(${(1 - easeOut(p01(t, 0.5, 2))) * 200}px)`}}>ALPHA</div>
         </L>
-        <L p={EM5} opacity={settle} dof={false}>
+        <L p={EM5} opacity={(1 - p01(t, CRANE + 0.15, 0.55)) * (settle)} dof={false}>
           <div style={{transform: `scale(${1 + 0.07 * Math.sin(Math.PI * hit) * (1 - hit)})`}}>
             <Emblem width={330} sweep={easeInOut(p01(t, FINAL - 0.7, 0.65))} drop={p01(t, FINAL - 0.55, 0.55)} />
           </div>
         </L>
-        <L p={[0, -305, 0]} opacity={p01(t, FINAL - 0.2, 0.3)} dof={false}>
+        <L p={[0, -305, 0]} opacity={(1 - p01(t, CRANE + 0.15, 0.55)) * (p01(t, FINAL - 0.2, 0.3))} dof={false}>
           <div style={{width: 560, height: 139, overflow: 'hidden', clipPath: `inset(0 0 0 ${(1 - easeInOut(p01(t, FINAL - 0.2, 0.6))) * 100}%)`}}>
             <Img src={staticFile('brand/wordmark-gold.png')} style={{width: 560}} />
           </div>
         </L>
-        <L p={[0, -110, 60]}>
+        <L p={[0, -110, 60]} opacity={(1 - p01(t, CRANE + 0.15, 0.55))}>
           <Words text="جاهز نبدأ مشروعك" t={t} start={FINAL + 0.05} size={104} color={C.white} />
         </L>
-        <L p={[0, 25, 60]}>
+        <L p={[0, 25, 60]} opacity={(1 - p01(t, CRANE + 0.15, 0.55))}>
           <Words text="من قوانزو؟" t={t} start={FINAL + 0.4} size={104} color={C.kick} />
         </L>
-        <L p={[0, 190, 40]} opacity={easeOut(p01(t, FINAL + 0.75, 0.5))}>
+        <L p={[0, 190, 40]} opacity={(1 - p01(t, CRANE + 0.15, 0.55)) * (easeOut(p01(t, FINAL + 0.75, 0.5)))}>
           <div dir="rtl" style={{fontFamily: AR, fontSize: 46, color: 'rgba(255,255,255,.86)', whiteSpace: 'nowrap'}}>أرسل لنا طلبك ونرد عليك بعرض واضح</div>
         </L>
-        <L p={BTN}>
+        <L p={BTN} opacity={(1 - p01(t, CRANE + 0.15, 0.55))}>
           <div dir="rtl" style={{display: 'flex', alignItems: 'center', gap: 22, height: 132, padding: '0 64px', borderRadius: 24, background: C.gold, color: C.white, fontFamily: AR, fontWeight: 600, fontSize: 52, boxShadow: '0 24px 70px rgba(201,154,22,.45)'}}>
             <Icon name="wa" size={58} color={C.white} />
             راسلنا على واتساب
           </div>
         </L>
-        <L p={[0, 545, 40]} opacity={easeOut(p01(t, FINAL + 1.0, 0.6))}>
+        <L p={[0, 545, 40]} opacity={(1 - p01(t, CRANE + 0.15, 0.55)) * (easeOut(p01(t, FINAL + 1.0, 0.6)))}>
           <div style={{fontFamily: LAT, fontWeight: 600, fontSize: 56, color: C.goldL, letterSpacing: '0.04em', transform: `translateY(${(1 - easeOut(p01(t, FINAL + 1.0, 0.6))) * 30}px)`}}>alphaglobalcargo.com</div>
+        </L>
+        {/* closing frame: compact lock-up above the contact card */}
+        <L p={[0, 600, 0]} opacity={easeInOut(p01(t, CRANE + 0.5, 0.6))} dof={false}>
+          <div dir="ltr" style={{display: 'flex', alignItems: 'center', gap: 30, transform: `translateY(${(1 - easeOut(p01(t, CRANE + 0.5, 0.7))) * 40}px)`}}>
+            <Emblem width={150} sweep={easeInOut(p01(t, CRANE + 0.5, 0.6))} drop={p01(t, CRANE + 0.55, 0.5)} />
+            <div style={{width: 3, height: 120, background: 'rgba(255,255,255,.22)'}} />
+            <Img src={staticFile('brand/wordmark-gold.png')} style={{width: 330}} />
+          </div>
+        </L>
+        <L p={[0, CARD_Y, 0]} dof={false}>
+          <ContactCard t={t} />
         </L>
       </World>
       <ParticleEmblem cam={cam} t={t} center={EM5} width={330} start={0.15} land={FINAL - 0.05} fade={[FINAL - 0.4, FINAL + 0.1]} seed={3} rings={false} />

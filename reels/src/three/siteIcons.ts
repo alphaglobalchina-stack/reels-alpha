@@ -13,4 +13,8 @@ export const SITE_ICONS: Record<string, {attrs: string; body: string}> = {
   "box": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<path d=\"M21 8 12 3 3 8v8l9 5 9-5V8Z\"/><path d=\"m3 8 9 5 9-5M12 13v8\"/>"},
   "cont": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"1\"/><path d=\"M6 9v6M10 9v6M14 9v6M18 9v6\"/>"},
   "arrow": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<path d=\"M5 12h14M13 6l6 6-6 6\"/>"},
+  // Not in the site's sprite: drawn in the same 24px, 1.7px-stroke style.
+  "globe": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<circle cx=\"12\" cy=\"12\" r=\"9.5\"/><path d=\"M2.5 12h19\"/><path d=\"M12 2.5a14 14 0 0 1 0 19 14 14 0 0 1 0-19Z\"/>"},
+  "instagram": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M17.4 6.6h.01\"/>"},
+  "wechat": {attrs: "fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"", body: "<path d=\"M9.6 4.2C5.5 4.2 2.2 6.9 2.2 10.3c0 1.9 1 3.6 2.7 4.7l-.6 2.3 2.7-1.4c.8.2 1.7.4 2.6.4\"/><path d=\"M15.6 9.6c-3.5 0-6.3 2.4-6.3 5.2s2.8 5.2 6.3 5.2c.7 0 1.4-.1 2-.3l2.3 1.2-.6-2c1.6-1 2.6-2.5 2.6-4.1 0-2.8-2.8-5.2-6.3-5.2Z\"/><path d=\"M7 8.3h.01M11.6 8.3h.01M13.6 13.6h.01M17.6 13.6h.01\"/>"},
 };
