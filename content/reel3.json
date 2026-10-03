@@ -1,0 +1,41 @@
+{
+  "reel": "reel3",
+  "bpm": 120,
+  "fps": 60,
+  "duration": 28,
+  "shots": {
+    "hero": [0, 9.5],
+    "services": [8.5, 15.5],
+    "about": [14.5, 20.5],
+    "tunnel": [19.5, 24.5],
+    "end": [23.5, 28]
+  },
+  "portal": 1.0,
+  "logoHit": 3.0,
+  "finalHit": 25.0,
+  "hero": {
+    "headline": ["شريكك الموثوق", "داخل الصين"],
+    "verbs": [
+      {"ar": "نبحث", "en": "WE FIND"},
+      {"ar": "نتفاوض", "en": "WE NEGOTIATE"},
+      {"ar": "نشحن", "en": "WE SHIP"}
+    ]
+  },
+  "services": [
+    {"en": "SOURCING", "ar": "المصانع والموردين", "icon": "factory", "photo": "photos16/line.jpg"},
+    {"en": "NEGOTIATION", "ar": "أفضل سعر نيابةً عنك", "icon": "handshake", "photo": "photos16/cmp.jpg"},
+    {"en": "INSPECTION", "ar": "فحص الجودة", "icon": "clipboard", "photo": "photos16/insp.jpg"},
+    {"en": "SHIPPING", "ar": "بحراً وجواً", "icon": "plane", "photo": "photos16/plane.jpg"}
+  ],
+  "about": {
+    "headline": ["من قوانغتشو", "إلى باب مستودعك"],
+    "stats": [
+      {"value": 4, "ar": "خدمات متكاملة"},
+      {"value": 2, "ar": "شحن جوي وبحري"},
+      {"value": 1, "ar": "شريك واحد"}
+    ]
+  },
+  "tunnel": ["photos16/ware.jpg", "photos16/show.jpg", "photos16/pack.jpg", "photos16/man.jpg", "photos16/city.jpg", "photos16/still.jpg", "photos16/flat.jpg", "photos16/cnc.jpg"],
+  "contacts": ["whatsapp", "mail", "globe", "instagram"],
+  "end": {"cta": "راسلنا على واتساب الآن", "url": "alphaglobalcargo.com"}
+}
