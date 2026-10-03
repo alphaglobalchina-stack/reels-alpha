@@ -3,6 +3,7 @@ import {Composition} from 'remotion';
 import {loadFonts} from './fonts';
 import {detectAssets} from './lib/assets';
 import {Reel1, reel1Defaults, reel1Frames} from './reels/Reel1';
+import {Reel2, reel2Frames} from './reels/Reel2';
 import {theme} from './theme';
 import {ReelProps} from './types';
 
@@ -27,5 +28,6 @@ export const RemotionRoot: React.FC = () => (
         props: {...props, assets: await detectAssets()} as ReelProps,
       })}
     />
+    <Composition id="Reel2" component={Reel2} width={width} height={height} fps={fps} durationInFrames={reel2Frames} />
   </>
 );

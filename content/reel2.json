@@ -1,0 +1,28 @@
+{
+  "reel": "reel2",
+  "bpm": 120,
+  "duration": 20,
+  "scenes": {
+    "logo": [0, 2],
+    "type": [2, 6],
+    "info": [6, 10],
+    "route": [10, 14],
+    "burst": [14, 17],
+    "end": [17, 20]
+  },
+  "words": [
+    {"en": "SOURCE", "ar": "نبحث", "photo": "photos16/line.jpg"},
+    {"en": "NEGOTIATE", "ar": "نتفاوض", "photo": "photos16/cmp.jpg"},
+    {"en": "INSPECT", "ar": "نفحص", "photo": "photos16/insp.jpg"},
+    {"en": "PACK", "ar": "نغلّف", "photo": "photos16/pack.jpg"},
+    {"en": "SHIP", "ar": "نشحن", "photo": "photos16/plane.jpg"}
+  ],
+  "steps": [
+    {"en": "SOURCING", "ar": "المصانع", "photo": "photos16/line.jpg"},
+    {"en": "DEALS", "ar": "التفاوض", "photo": "photos16/cmp.jpg"},
+    {"en": "QUALITY", "ar": "الفحص", "photo": "photos16/insp.jpg"},
+    {"en": "SHIPPING", "ar": "الشحن", "photo": "photos16/plane.jpg"}
+  ],
+  "tagline": ["شريكك الموثوق", "داخل الصين"],
+  "url": "alphaglobalcargo.com"
+}

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "remotion studio",
     "render:reel1": "remotion render Reel1 ../out/reel1.mp4 --codec=h264",
-    "render:reel2": "remotion render Reel2 ../out/reel2.mp4 --codec=h264",
+    "render:reel2": "remotion render Reel2 ../out/reel2.mp4 --codec=h264 --audio-codec=aac",
     "render:reel3": "remotion render Reel3 ../out/reel3.mp4 --codec=h264",
     "render:all": "npm run render:reel1 && npm run render:reel2 && npm run render:reel3",
     "typecheck": "tsc --noEmit"
