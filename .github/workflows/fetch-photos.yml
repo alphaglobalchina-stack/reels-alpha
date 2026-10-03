@@ -1,0 +1,25 @@
+name: fetch-photos
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: zip url
+        required: true
+      dest:
+        description: destination folder
+        required: true
+        default: assets/photos16
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          curl -fL -o /tmp/p.zip "${{ github.event.inputs.url }}"
+          mkdir -p "${{ github.event.inputs.dest }}"
+          unzip -oj /tmp/p.zip -d "${{ github.event.inputs.dest }}"
+          ls -la "${{ github.event.inputs.dest }}"
+          git config user.name bot && git config user.email bot@users.noreply.github.com
+          git add -A && git commit -m "add photos" && git push
