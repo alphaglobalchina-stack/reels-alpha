@@ -31,7 +31,7 @@ const p01 = (t: number, a: number, d: number) => clamp01((t - a) / d);
 const VB = {x: 70, y: 100, w: 800, h: 870};
 
 /** The vector emblem from the site's favicon.svg: swoosh sweeps in, the "A" drops into place. */
-const Emblem: React.FC<{width: number; aColor?: string; sweep?: number; drop?: number}> = ({width, aColor = C.cream, sweep = 1, drop = 1}) => {
+export const Emblem: React.FC<{width: number; aColor?: string; sweep?: number; drop?: number}> = ({width, aColor = C.cream, sweep = 1, drop = 1}) => {
   const id = useSafeId('em');
   const D = sweep * (VB.w + VB.h) * 1.05;
   const x0 = VB.x, y1 = VB.y + VB.h;
