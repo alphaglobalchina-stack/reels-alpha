@@ -132,6 +132,7 @@ export const L: React.FC<{
         left: 0,
         top: 0,
         transformStyle: 'preserve-3d',
+        transformOrigin: '0 0',
         backfaceVisibility: backface ? 'visible' : 'hidden',
         transform: `translate3d(${p[0]}px, ${p[1]}px, ${p[2]}px) rotateX(${r[0]}deg) rotateY(${r[1]}deg) rotateZ(${r[2]}deg) scale(${scale}) translate(-50%, -50%)`,
         opacity: o,

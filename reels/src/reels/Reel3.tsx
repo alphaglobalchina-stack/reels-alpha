@@ -404,8 +404,10 @@ const k2: Key[] = [
   {t: 1.0, x: 0, y: -20, z: 1620},
   {t: 1.9, x: 0, y: 0, z: 1330, rx: 0},
   {t: 2.8, x: 0, y: 0, z: 0, rx: -7, ry: 0},
-  {t: 3.7, ry: -90},
-  {t: 4.6, ry: -180, rx: -9},
+  {t: 3.1, x: 0, y: 0, z: 0},
+  {t: 3.7, x: 0, y: 0, z: 0, ry: -90},
+  {t: 4.6, x: 0, y: -20, z: 0, ry: -180, rx: -9},
+  {t: 5.2, x: 0, y: -40, z: 0},
   {t: 5.5, x: 0, y: -60, z: 0, ry: -270, rx: -6},
   {t: 6.0, x: 100, y: -225, rx: 0, ry: -270},
   {t: 7.0, x: 1000, y: -225, z: 0, rx: 0, ry: -270},
@@ -455,16 +457,16 @@ const Shot2: React.FC = () => {
           <div style={{width: 900, height: 900, borderRadius: '50%', background: 'radial-gradient(circle, rgba(15,27,45,.22), transparent 65%)'}} />
         </L>
         {/* section header: the camera flies through it into the cube */}
-        <L p={[0, -330, 1300]}>
+        <L p={[0, -330, 1300]} opacity={1 - p01(t, 2.3, 0.3)} backface={false}>
           <Kicker text="خدماتنا" color={C.goldD} size={44} t={t} start={0.05} />
         </L>
-        <L p={[0, -150, 1300]}>
+        <L p={[0, -150, 1300]} opacity={1 - p01(t, 2.3, 0.3)} backface={false}>
           <Words text="كل ما تحتاجه" t={t} start={0.15} size={128} color={C.navy} />
         </L>
-        <L p={[0, 30, 1300]}>
+        <L p={[0, 30, 1300]} opacity={1 - p01(t, 2.3, 0.3)} backface={false}>
           <Words text="للاستيراد من الصين" t={t} start={0.4} size={128} color={C.navy} />
         </L>
-        <L p={[0, 230, 1300]} opacity={easeOut(p01(t, 0.8, 0.5))}>
+        <L p={[0, 230, 1300]} opacity={easeOut(p01(t, 0.8, 0.5)) * (1 - p01(t, 2.3, 0.3))} backface={false}>
           <div dir="rtl" style={{fontFamily: AR, fontSize: 46, color: C.muted, whiteSpace: 'nowrap'}}>جهة واحدة تتابع طلبك من أول عرض سعر حتى التسليم</div>
         </L>
         {/* four service cards fold into a box */}
