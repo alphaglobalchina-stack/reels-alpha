@@ -9,6 +9,7 @@ import {FPS, TOTAL_FRAMES} from './film/timing';
 import {AlphaV2} from './v2/AlphaV2';
 import {PREVIEW_END} from './v2/t2';
 import {SouqCalib} from './v2/shots/C_Market';
+import {AlphaV3} from './v3/AlphaV3';
 import {ReelProps} from './types';
 
 loadFonts();
@@ -44,6 +45,15 @@ export const RemotionRoot: React.FC = () => (
     <Composition
       id="AlphaV2Preview"
       component={AlphaV2}
+      width={1080}
+      height={1920}
+      fps={60}
+      durationInFrames={Math.round(PREVIEW_END * 60)}
+      defaultProps={{audio: true, subtitles: true}}
+    />
+    <Composition
+      id="AlphaV3Preview"
+      component={AlphaV3}
       width={1080}
       height={1920}
       fps={60}
