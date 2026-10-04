@@ -80,10 +80,11 @@ const out = (f: number, start: number, dur = 12, dist = -90): React.CSSPropertie
 };
 
 /** Vertical "slot" roll between items: item k is in view between enter[k] and enter[k+1]. */
-const roll = (f: number, enter: number, leave: number | null) => {
-  const i = tw(f, enter, 14, 'expo.out');
-  const o = leave === null ? 0 : tw(f, leave - 7, 9, 'expo.in');
-  return {transform: `translateY(${(1 - i) * 110 - o * 110}%)`, opacity: Math.min(1, i * 2) * (1 - o)} as React.CSSProperties;
+const roll = (f: number, enter: number, next: number | null) => {
+  const i = tw(f, enter, 12, 'expo.inOut');
+  const o = next === null ? 0 : tw(f, next, 12, 'expo.inOut');
+  const blur = (Math.sin(Math.PI * Math.min(1, i)) + Math.sin(Math.PI * o)) * 7;
+  return {transform: `translateY(${(1 - i) * 100 - o * 100}%)`, opacity: Math.min(1, i * 1.5) * (1 - o * o), filter: blur > 0.3 ? `blur(${blur}px)` : undefined} as React.CSSProperties;
 };
 
 // ════════════════════════════════════════════════════════════════════════════════════
@@ -101,7 +102,7 @@ const Hook: React.FC<{f: number}> = ({f}) => {
   const textFade = 1 - tw(f, 92, 12, 'power2.in');
 
   const slam = tw(f, 0, 12, 'back.out(2.6)');
-  const tag = tw(f, 4, 16, 'expo.out');
+  const tag = tw(f, -7, 16, 'expo.out');
   const barIn = tw(f, 34, 10, 'expo.out');
   const word = tw(f, 37, 16, 'back.out(3)');
   const toDot = tw(f, 88, 16, 'power3.inOut');
@@ -135,9 +136,9 @@ const Hook: React.FC<{f: number}> = ({f}) => {
         </Row>
         {/* line 1 slams in on the very first hit — legible from frame 0 */}
         <Row top={575}>
-          <div style={{transform: `scale(${1.22 - 0.22 * slam})`, filter: `blur(${(1 - Math.min(1, slam)) * 3}px)`, display: 'flex', gap: 34, direction: 'rtl'}}>
-            <ArabicText size={138} weight={800}>{h.line1[0]}</ArabicText>
-            <ArabicText size={138} weight={800} color={RED}>{h.line1[1]}</ArabicText>
+          <div style={{transform: `scale(${1.1 - 0.1 * slam})`, filter: `blur(${(1 - Math.min(1, slam)) * 3}px)`, display: 'flex', gap: 34, direction: 'rtl'}}>
+            <ArabicText size={128} weight={800}>{h.line1[0]}</ArabicText>
+            <ArabicText size={128} weight={800} color={RED}>{h.line1[1]}</ArabicText>
           </div>
         </Row>
         <Row top={790}>
@@ -469,7 +470,7 @@ const Phases: React.FC<{f: number}> = ({f}) => {
           const card = CARDS[i];
           const e = CARD_HIT[i];
           const fall = i > 0 ? tw(f, 411, 13, 'power3.in') : 0;
-          const leave = i === 0 ? tw(f, 420, 8, 'power2.in') : 0;
+          const leave = i === 0 ? tw(f, 413, 7, 'power2.in') : 0;
           const draw = tw(f, e, 16, 'power3.out');
           const txt = tw(f, e + 2, 14, 'expo.out');
           const ant = tw(f, 406, 12, 'power2.inOut');
@@ -532,10 +533,10 @@ const Phases: React.FC<{f: number}> = ({f}) => {
           {/* header labels roll per phase */}
           {P.items.map((it, j) => {
             const leave = j < 2 ? PS[j + 1] : null;
-            if (f < PS[j] - 6 || (leave !== null && f > leave + 3)) return null;
+            if (f < PS[j] - 7 || (leave !== null && f > leave + 8)) return null;
             return (
               <div key={j} style={{position: 'absolute', right: 300, top: 318, width: 640, overflow: 'hidden', padding: '6px 0'}}>
-                <div style={roll(f, PS[j] - 4, leave)}>
+                <div style={roll(f, PS[j] - 6, leave === null ? null : leave - 6)}>
                   <ArabicText size={42} weight={700} align="right" color={C.goldLight} lineHeight={1.3}>{it.label}</ArabicText>
                   <ArabicText size={66} weight={800} align="right" lineHeight={1.3} style={{whiteSpace: 'nowrap'}}>{it.dates}</ArabicText>
                 </div>
@@ -574,12 +575,12 @@ const Phases: React.FC<{f: number}> = ({f}) => {
           {/* phase title + chips */}
           {P.items.map((it, j) => {
             const leave = j < 2 ? PS[j + 1] : null;
-            if (f < PS[j] - 6 || (leave !== null && f > leave + 3)) return null;
+            if (f < PS[j] - 7 || (leave !== null && f > leave + 8)) return null;
             const chipOut = leave !== null ? tw(f, leave - 8, 8, 'power3.in') : 0;
             return (
               <React.Fragment key={j}>
                 <div style={{position: 'absolute', left: 0, right: 0, top: 1080, overflow: 'hidden', padding: '8px 0'}}>
-                  <div style={roll(f, PS[j] - 3, leave)}>
+                  <div style={roll(f, PS[j] - 5, leave === null ? null : leave - 5)}>
                     <ArabicText size={92} weight={800} gold lineHeight={1.3}>{it.title}</ArabicText>
                   </div>
                 </div>
@@ -759,17 +760,17 @@ const Stats: React.FC<{f: number}> = ({f}) => {
       </Row>
       {s.items.map((it, k) => {
         const leave = k < 2 ? starts[k + 1] : null;
-        if (f < starts[k] - 2 || (leave !== null && f > leave + 2)) return null;
+        if (f < starts[k] - 5 || (leave !== null && f > leave + 10)) return null;
         const v = it.value * tw(f, starts[k], 24, 'power3.out');
         return (
           <React.Fragment key={k}>
             <div style={{position: 'absolute', top: 370, left: 0, right: 0, overflow: 'hidden', display: 'flex', justifyContent: 'center'}}>
-              <div style={roll(f, starts[k], leave)}>
+              <div style={roll(f, starts[k] - 4, leave === null ? null : leave - 4)}>
                 <LtrText size={176} weight={800} gold style={{lineHeight: 1.1}}>{`${it.prefix}${fmt(v, it.decimals)}`}</LtrText>
               </div>
             </div>
             <div style={{position: 'absolute', top: 580, left: 0, right: 0, overflow: 'hidden', padding: '6px 0'}}>
-              <div style={roll(f, starts[k] + 3, leave)}>
+              <div style={roll(f, starts[k] - 2, leave === null ? null : leave - 2)}>
                 <ArabicText size={66} weight={800} lineHeight={1.3}>{it.label}</ArabicText>
               </div>
             </div>
