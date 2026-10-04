@@ -793,7 +793,10 @@
  ],
  "cta": {
   "line": "Your sourcing partner in Guangzhou",
-  "whatsapp": "+86 186 6469 7193",
-  "footer": "alphaglobalcargo.com  •  @alpha.global.china"
+  "logo": "logo-official.png",
+  "phone": "+86 186 6469 7193",
+  "channels": "WhatsApp · WeChat · Phone",
+  "email": "info@alphaglobalcargo.com",
+  "website": "www.alphaglobalcargo.com"
  }
 }

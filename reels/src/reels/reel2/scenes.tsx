@@ -2,14 +2,13 @@ import React from 'react';
 import {AbsoluteFill, Img, staticFile} from 'remotion';
 import vo from '../../../../content/reel2-vo.json';
 import {LineIcon} from '../../components/LineIcon';
-import {LogoMark, Wordmark} from '../../components/Logo';
 import {rand} from '../../lib/anim';
 import {lerp, tw} from '../../lib/gs';
 import {ANTON, Big, C, Center, Label, Letters, Mask, MONT, Photo, Shade, at, exit, fadeUp, rise, slam} from './fx';
 import {BoothField, GoldGlobe, GoldTitle, Gold140, IconFlip, Stage} from './objects3d';
 
 type S = {f: number};
-const pitch = (vo as unknown as {cta: {whatsapp: string; footer: string; line: string}}).cta;
+const pitch = (vo as unknown as {cta: {line: string; logo: string; phone: string; channels: string; email: string; website: string}}).cta;
 
 /** Wrapper that only mounts its children inside [from, to). */
 export const Range: React.FC<{f: number; from: number; to: number; children: React.ReactNode}> = ({f, from, to, children}) =>
@@ -810,7 +809,9 @@ export const S10: React.FC<S> = ({f}) => {
   const inP = tw(f, 1226, 16, 'power2.out');
   const tagOut = tw(f, see - 8, 10, 'power3.in');
   const ctaT = see + 8;
-  const pill = tw(f, ctaT + 18, 16, 'back.out(1.8)');
+  const card = tw(f, ctaT + 4, 20, 'back.out(1.3)');
+  const glint = tw(f, ctaT + 22, 22, 'power2.inOut');
+  const pill = tw(f, ctaT + 16, 16, 'back.out(1.8)');
   const pulse = 1 + 0.03 * Math.sin((f - ctaT) / 5);
   return (
     <AbsoluteFill style={{opacity: inP}}>
@@ -843,24 +844,37 @@ export const S10: React.FC<S> = ({f}) => {
               ))}
             </div>
           </Center>
-          <Center top={850}>
-            <div style={{display: 'flex', alignItems: 'center', gap: 22, direction: 'ltr', ...fadeUp(f, ctaT)}}>
-              <LogoMark t={f - ctaT} size={130} />
-              <Wordmark t={f - ctaT - 6} size={82} shimmerAt={40} letterDelay={2} />
+          <Center top={808}>
+            <div style={fadeUp(f, ctaT + 4)}>
+              <Label size={28} spacing={8} color={C.cream}>{pitch.line}</Label>
             </div>
           </Center>
-          <Center top={1030}>
-            <div style={fadeUp(f, ctaT + 10)}>
-              <Label size={30} spacing={7} color={C.cream}>{pitch.line}</Label>
+          {/* official logo, untouched, on its own white card */}
+          <div style={{position: 'absolute', left: 80, top: 852, width: 920, perspective: 1600}}>
+            <div
+              style={{
+                position: 'relative',
+                overflow: 'hidden',
+                borderRadius: 30,
+                background: '#FFFFFF',
+                padding: '26px 40px',
+                boxShadow: '0 30px 90px rgba(0,0,0,0.55), 0 0 0 2px rgba(242,210,122,0.7)',
+                transformOrigin: '50% 0%',
+                transform: `rotateX(${(1 - card) * -92}deg)`,
+                opacity: Math.min(1, card * 3),
+              }}
+            >
+              <Img src={staticFile(pitch.logo)} style={{width: '100%', display: 'block'}} />
+              <div style={{position: 'absolute', top: 0, bottom: 0, left: `${-30 + glint * 160}%`, width: '18%', background: 'linear-gradient(100deg, transparent, rgba(255,240,200,0.75), transparent)', transform: 'skewX(-20deg)', mixBlendMode: 'multiply', opacity: glint > 0 && glint < 1 ? 1 : 0}} />
             </div>
-          </Center>
-          <Center top={1110}>
+          </div>
+          <Center top={1168}>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 22,
-                padding: '16px 46px 16px 22px',
+                gap: 20,
+                padding: '12px 40px 12px 16px',
                 borderRadius: 999,
                 background: 'linear-gradient(135deg, #8F6A10, #C9971C 35%, #F2D27A 52%, #C9971C 70%, #8F6A10)',
                 boxShadow: `0 0 60px rgba(201,151,28,0.55)`,
@@ -868,18 +882,28 @@ export const S10: React.FC<S> = ({f}) => {
                 opacity: Math.min(1, pill * 2),
               }}
             >
-              <div style={{width: 84, height: 84, borderRadius: 42, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <LineIcon name="whatsapp" size={52} progress={tw(f, ctaT + 20, 16, 'power2.out')} strokeWidth={1.8} />
-              </div>
-              <div style={{display: 'flex', flexDirection: 'column'}}>
-                <Label size={22} color="#111" spacing={6}>WhatsApp</Label>
-                <div style={{fontFamily: MONT, fontWeight: 900, fontSize: 54, color: '#111', letterSpacing: 1}}>{pitch.whatsapp}</div>
+              {(['whatsapp', 'phone'] as const).map((ic) => (
+                <div key={ic} style={{width: 72, height: 72, borderRadius: 36, background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <LineIcon name={ic} size={42} progress={tw(f, ctaT + 20, 16, 'power2.out')} strokeWidth={1.8} />
+                </div>
+              ))}
+              <div style={{display: 'flex', flexDirection: 'column', marginLeft: 4}}>
+                <Label size={20} color="#111" spacing={4}>{pitch.channels}</Label>
+                <div style={{fontFamily: MONT, fontWeight: 900, fontSize: 50, color: '#111', letterSpacing: 1, lineHeight: 1.1}}>{pitch.phone}</div>
               </div>
             </div>
           </Center>
-          <Center top={1290}>
-            <div style={{...fadeUp(f, ctaT + 26), fontFamily: MONT, fontWeight: 700, fontSize: 30, color: C.goldLight, letterSpacing: 2}}>{pitch.footer}</div>
-          </Center>
+          {([
+            ['mail', pitch.email],
+            ['globe', pitch.website],
+          ] as const).map(([ic, v], i) => (
+            <Center key={ic} top={1310 + i * 64}>
+              <div style={{display: 'flex', alignItems: 'center', gap: 16, ...fadeUp(f, ctaT + 26 + i * 4)}}>
+                <LineIcon name={ic} size={38} progress={tw(f, ctaT + 26 + i * 4, 16, 'power2.out')} strokeWidth={1.8} />
+                <div style={{fontFamily: MONT, fontWeight: 700, fontSize: 36, color: C.white, letterSpacing: 0.5}}>{v}</div>
+              </div>
+            </Center>
+          ))}
         </>
       )}
     </AbsoluteFill>
