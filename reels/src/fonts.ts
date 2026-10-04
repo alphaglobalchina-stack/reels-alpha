@@ -10,7 +10,8 @@ const faces: Face[] = [
     {family: 'Cairo', weight: w, file: `fonts/cairo-arabic-${w}-normal.woff2`, range: ARABIC},
     {family: 'Cairo', weight: w, file: `fonts/cairo-latin-${w}-normal.woff2`, range: LATIN},
   ]),
-  ...[500, 600, 700, 800].map((w): Face => ({family: 'Montserrat', weight: w, file: `fonts/montserrat-latin-${w}-normal.woff2`, range: LATIN})),
+  ...[500, 600, 700, 800, 900].map((w): Face => ({family: 'Montserrat', weight: w, file: `fonts/montserrat-latin-${w}-normal.woff2`, range: LATIN})),
+  {family: 'Anton', weight: 400, file: 'fonts/anton-latin-400-normal.woff2', range: LATIN},
 ];
 
 let started = false;

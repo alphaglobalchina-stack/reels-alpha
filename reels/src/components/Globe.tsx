@@ -10,7 +10,7 @@ type LL = [number, number];
 let LAND_DOTS: LL[] | null = null;
 
 /** Evenly spaced dots on land (computed once per tab). */
-const landDots = (): LL[] => {
+export const landDots = (): LL[] => {
   if (LAND_DOTS) return LAND_DOTS;
   const topo = landTopo as unknown as Topology;
   const land = feature(topo, topo.objects.land);

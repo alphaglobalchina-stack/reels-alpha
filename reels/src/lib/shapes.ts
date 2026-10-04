@@ -74,6 +74,31 @@ const chip = () => {
   return `${poly(pts)} ${rectPath(158, 158, 84, 84, 10)}`;
 };
 
+/** Outline of a thick polyline (miter joins) as one closed polygon. */
+const strokePoly = (pts: [number, number][], w: number) => {
+  const h = w / 2;
+  const norm = (a: [number, number], b: [number, number]): [number, number] => {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const l = Math.hypot(dx, dy);
+    return [-dy / l, dx / l];
+  };
+  const side = (sgn: number) =>
+    pts.map((p, i) => {
+      const n0 = i > 0 ? norm(pts[i - 1], p) : norm(p, pts[i + 1]);
+      const n1 = i < pts.length - 1 ? norm(p, pts[i + 1]) : n0;
+      const mx = n0[0] + n1[0], my = n0[1] + n1[1];
+      const ml = Math.hypot(mx, my);
+      const k = h / Math.max(0.35, (mx * n1[0] + my * n1[1]) / ml);
+      return [p[0] + (sgn * mx * k) / ml, p[1] + (sgn * my * k) / ml] as [number, number];
+    });
+  return poly([...side(1), ...side(-1).reverse()]);
+};
+
+const trend = () => {
+  const line: [number, number][] = [[52, 318], [150, 214], [214, 270], [300, 168]];
+  return `${strokePoly(line, 40)} ${poly([[262, 112], [356, 96], [338, 190]])}`;
+};
+
 export const ICONS = {
   gear: gear(),
   chip: chip(),
@@ -90,6 +115,7 @@ export const ICONS = {
   heart:
     'M200 344 C120 284 48 232 48 160 C48 108 88 74 134 74 C164 74 190 92 200 116 C210 92 236 74 266 74 C312 74 352 108 352 160 C352 232 280 284 200 344 Z',
   square: rectPath(50, 50, 300, 300, 26),
+  trend: trend(),
 };
 
 export const ICON_SEQ: string[] = [
