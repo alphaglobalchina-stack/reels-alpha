@@ -93,6 +93,6 @@ for pi,(scene,p) in enumerate(PHRASES):
   ws=[w for w in out_words if w['phrase']==pi]
   phr.append(dict(i=pi,scene=scene,text=' '.join(w['text'] for w in ws),start=ws[0]['start'],end=ws[-1]['end'],words=[w['i'] for w in ws]))
 dur=len(x)/sr
-json.dump(dict(source='assets/voiceover.mp3',duration=round(dur,3),frameSec=fr,aligner='Omnilingual-ASR 300M CTC, Viterbi forced alignment',phrases=phr,words=out_words),open('content/vo-timing.json','w',encoding='utf8'),ensure_ascii=False,indent=1)
+json.dump(dict(source='assets/voiceover.mp3',duration=round(dur,3),frameSec=fr,aligner='Omnilingual-ASR 300M CTC, Viterbi forced alignment',phrases=phr,words=out_words),open('content/vo-timing.raw.json','w',encoding='utf8'),ensure_ascii=False,indent=1)
 for p in phr: print(f"{p['start']:6.2f}-{p['end']:6.2f} {p['scene']:4} {p['text']}")
 print('low conf:',[(w['text'],w['conf']) for w in out_words if w['conf']<0.2])

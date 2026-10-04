@@ -83,10 +83,10 @@ export const AlphaOpening: React.FC<AlphaOpeningProps> = ({audio, subtitles}) =>
       )}
       {live(S9.start, S9.end) && <Scene9 t={t} />}
       {live(S10.start, S10.end) && <Scene10 t={t} />}
-      <Dust t={t} amount={t < S10.start + 0.4 ? 0.7 : 0} />
-      {t < S10.start + 0.6 && <Vignette />}
+      <Dust t={t} amount={0.7} />
+      <Vignette />
       {subtitles && <Subtitles t={t} />}
-      <Grain frame={frame} opacity={t < S10.start + 0.6 ? 0.075 : 0.05} />
+      <Grain frame={frame} />
       {audio && <Audio src={staticFile('film/mix.wav')} />}
     </AbsoluteFill>
   );

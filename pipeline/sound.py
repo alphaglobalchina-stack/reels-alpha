@@ -14,7 +14,7 @@ from scipy.signal import butter, sosfilt, fftconvolve
 
 SR = 48000
 vo_t = json.load(open('content/vo-timing.json', encoding='utf8'))
-HOLD = 3.0
+HOLD = 3.6
 DUR = round((vo_t['duration'] + HOLD) * 60) / 60
 N = int(DUR * SR)
 rng = np.random.default_rng(11)
@@ -34,7 +34,7 @@ T = dict(
     follow=at('نتابع'), sample=at('العينة'), prod=at('الإنتاج'), insp=at('فحص'), preship=at('قبل'), ensure=at('للتأكد'), match=at('مطابقتها'),
     whether=at('سواء'), products=at('منتجات'), equip=at('معدات'), mach=at('مكائن'), lines=at('خطوط'), help=at('نحن'), steps=at('بخطوات'), studied=at('ومدروسة'),
     then=at('ثم'), ship=at('الشحن', 1, 35), port=at('ميناء'),
-    dont=at('لا', 1, 38), sup=at('مورد', 1, 39), own=at('امتلك'), partner=at('شريكا'), name=at('guangzhou'), tag=at('شريكك'),
+    dont=at('لا', 1, 38), sup=at('مورد', 1, 39), own=at('امتلك'), partner=at('شريكا'), name=vo_t['marks']['brand'], tag=at('شريكك'),
 )
 VACUUM = (38.31, T['own'])          # music drops out before the hero line
 END_VO = vo_t['duration']
@@ -256,9 +256,11 @@ add(low_drone(VACUUM[1] - VACUUM[0] + 0.2), VACUUM[0], 0.8)                # vac
 add(riser(T['partner'] - T['own'] + 0.15, 29), T['own'] - 0.15, 0.8)
 add(impact(1.0, 30), T['partner'], 0.95)                                   # hero line
 add(shimmer(2.0), T['partner'] + 0.05, 0.9)
-add(riser(0.45, 31), T['name'] - 0.45, 0.55)                               # convergence
-add(impact(1.15, 32), T['name'], 1.0)                                      # ALPHA reveal
-add(shimmer(3.2), T['name'] + 0.05, 1.2)
+add(riser(0.5, 31), T['name'] - 0.5, 0.6)                                  # convergence
+add(impact(1.2, 32), T['name'], 1.0)                                       # ALPHA reveal
+add(whoosh(1.2, 120, 3500, 0.15, 33), T['name'] - 0.05, 0.55)              # shockwave
+add(shimmer(3.4), T['name'] + 0.05, 1.3)
+add(whoosh(0.7, 2500, 9000, 0.5, 34), T['name'] + 0.68, 0.22)              # light sweep on the plaque
 add(blip(1600, 0.12, 0.1), T['tag'] + 1.3)
 
 # ── voice + side-chain + master ──────────────────────────────────────────────

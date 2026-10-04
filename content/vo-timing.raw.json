@@ -1,6 +1,6 @@
 {
- "source": "assets/film/voiceover_edit.wav",
- "duration": 45.926,
+ "source": "assets/voiceover.mp3",
+ "duration": 47.386,
  "frameSec": 0.020002585479105106,
  "aligner": "Omnilingual-ASR 300M CTC, Viterbi forced alignment",
  "phrases": [
@@ -275,14 +275,29 @@
   {
    "i": 20,
    "scene": "s10",
-   "text": "شريكك التجاري من الصين.",
-   "start": 43.986,
-   "end": 45.606,
+   "text": "GUANGZHOU ALPHA GLOBAL TRADING CO., LTD",
+   "start": 42.525,
+   "end": 44.906,
    "words": [
     88,
     89,
     90,
-    91
+    91,
+    92,
+    93
+   ]
+  },
+  {
+   "i": 21,
+   "scene": "s10",
+   "text": "شريكك التجاري من الصين.",
+   "start": 45.446,
+   "end": 47.066,
+   "words": [
+    94,
+    95,
+    96,
+    97
    ]
   }
  ],
@@ -993,47 +1008,83 @@
   },
   {
    "i": 88,
-   "text": "شريكك",
+   "text": "GUANGZHOU",
    "phrase": 20,
-   "start": 43.986,
-   "end": 44.426,
-   "conf": 0.337
+   "start": 42.525,
+   "end": 42.946,
+   "conf": 0.006
   },
   {
    "i": 89,
-   "text": "التجاري",
+   "text": "ALPHA",
    "phrase": 20,
-   "start": 44.506,
-   "end": 44.986,
-   "conf": 0.383
+   "start": 43.106,
+   "end": 43.366,
+   "conf": 0.022
   },
   {
    "i": 90,
-   "text": "من",
+   "text": "GLOBAL",
    "phrase": 20,
-   "start": 45.126,
-   "end": 45.206,
-   "conf": 0.396
+   "start": 43.466,
+   "end": 43.786,
+   "conf": 0.023
   },
   {
    "i": 91,
-   "text": "الصين.",
+   "text": "TRADING",
    "phrase": 20,
-   "start": 45.286,
-   "end": 45.606,
+   "start": 43.866,
+   "end": 44.206,
+   "conf": 0.032
+  },
+  {
+   "i": 92,
+   "text": "CO.,",
+   "phrase": 20,
+   "start": 44.266,
+   "end": 44.366,
+   "conf": 0.03
+  },
+  {
+   "i": 93,
+   "text": "LTD",
+   "phrase": 20,
+   "start": 44.526,
+   "end": 44.906,
+   "conf": 0.004
+  },
+  {
+   "i": 94,
+   "text": "شريكك",
+   "phrase": 21,
+   "start": 45.446,
+   "end": 45.886,
+   "conf": 0.337
+  },
+  {
+   "i": 95,
+   "text": "التجاري",
+   "phrase": 21,
+   "start": 45.966,
+   "end": 46.446,
+   "conf": 0.383
+  },
+  {
+   "i": 96,
+   "text": "من",
+   "phrase": 21,
+   "start": 46.586,
+   "end": 46.666,
+   "conf": 0.396
+  },
+  {
+   "i": 97,
+   "text": "الصين.",
+   "phrase": 21,
+   "start": 46.746,
+   "end": 47.066,
    "conf": 0.308
   }
- ],
- "edit": {
-  "cut": [
-   42.33,
-   45.24
-  ],
-  "pause": 1.45,
-  "shift": -1.46,
-  "removed": "company name (on screen only)"
- },
- "marks": {
-  "brand": 42.47
- }
+ ]
 }

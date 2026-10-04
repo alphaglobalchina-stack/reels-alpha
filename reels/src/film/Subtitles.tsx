@@ -6,9 +6,9 @@ import {phrases, words} from './timing';
 /**
  * Karaoke subtitle panel — one phrase at a time, current word glows gold.
  * Words are separate inline spans (never split inside a word, Arabic shaping intact).
- * Phrases whose words are already on screen as hero type are listed in HIDE.
+ * Phrases whose words are already on screen as hero type are hidden.
  */
-const HIDE = new Set<number>([0, 18, 19, 20, 21]);
+const hidden = (i: number) => i === 0 || ['s9', 's10'].includes(phrases[i].scene);
 
 export const Subtitles: React.FC<{t: number; y?: number}> = ({t, y = 1508}) => {
   const idx = phrases.findIndex((p, i) => {
@@ -16,7 +16,7 @@ export const Subtitles: React.FC<{t: number; y?: number}> = ({t, y = 1508}) => {
     const until = next ? Math.min(next.start - 0.08, p.end + 0.6) : p.end + 0.6;
     return t >= p.start - 0.12 && t < until;
   });
-  if (idx < 0 || HIDE.has(idx)) return null;
+  if (idx < 0 || hidden(idx)) return null;
   const p = phrases[idx];
   const next = phrases[idx + 1];
   const until = next ? Math.min(next.start - 0.08, p.end + 0.6) : p.end + 0.6;

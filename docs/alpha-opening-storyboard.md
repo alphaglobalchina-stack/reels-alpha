@@ -1,7 +1,12 @@
 # ALPHA — Opening Brand Film · Storyboard
 
-Composition `AlphaOpening` · 1080×1920 · 60 fps master (+30 fps review) · 50.4 s
-(voice-over 47.39 s + 3.0 s CTA hold).
+Composition `AlphaOpening` · 1080×1920 · 60 fps master (+30 fps review) · 49.5 s
+(edited voice-over 45.93 s + 3.6 s CTA hold).
+
+**VO edit:** the spoken company name ("GUANGZHOU ALPHA GLOBAL TRADING CO., LTD", 42.52–44.91 s in
+the original take) is cut out by `pipeline/edit_vo.py` — both cut points sit inside measured
+silences — and replaced by a 1.8 s musical pause that carries the logo hit. The name stays on
+screen only. Times from scene 10 on are in the edited timeline.
 
 All times below come from `content/vo-timing.json` — CTC forced alignment of the
 script against `assets/voiceover.mp3` (Meta Omnilingual-ASR 300M CTC emissions,
@@ -39,7 +44,7 @@ Drop any of them into `assets/film/` to swap in.
 | 7 | 25.45 – 35.40 | **منتجات** 27.00 · **معدات** 27.78 · **مكائن** 28.62 · **خطوط إنتاج** 29.50 · نساعدك في **التوريد** 31.30 · **بخطوات واضحة** 33.06 | fair_hall crop · fair_booth crop · cnc · pack · n4 | Industrial tunnel of gold rings with photo panels; each category lands as a big chip on its word. Then the tunnel resolves into five clear steps (SOURCE · NEGOTIATE · PRODUCE · INSPECT · SHIP). | Step 05 SHIP ignites; its line extends into the route. |
 | 8 | 35.00 – 38.62 | ثم نرتب **الشحن** 36.02 · من الصين · إلى **ميناء** 37.38 · وجهتك 37.80 | land-dots globe · code-built ship | Dark dotted globe, Guangzhou origin, gold route arcs out on "الشحن", destination pin on "ميناء". Camera follows the line down to sea level; it becomes a ship's wake. | Fade to the vacuum. |
 | 9 | 38.31 – 42.40 | لا تبحث عن **مُوَرِّد** 39.37 فقط… · امتلك **شريكًا** 40.91 **داخل الصين** 41.47 | — (pure type) | Vacuum: music drops out. "مُوَرِّد" sits small in a thin box, then dims. Box breaks open and "شريكًا داخل الصين" lands huge in gold (impact, light leak, brief RGB split). YOUR TRADE PARTNER IN CHINA. | Every line, node and route from the film converges to centre. |
-| 10 | 42.17 – 50.40 | **GUANGZHOU ALPHA GLOBAL TRADING CO., LTD** 42.52 · **شريكك التجاري من الصين** 45.45 | logo.png | Convergence flash opens into a warm ivory end card: official logo (with English + Chinese names), tagline, CTA "ابدأ رحلتك في التوريد من الصين / START YOUR SOURCING JOURNEY", alphaglobalcargo.com + contact row. Clean hold ≥ 3 s. | — |
+| 10 | 42.39 – 49.53 | (pause — logo hit 42.47) · **شريكك التجاري من الصين** 43.99 | logo.png | Dark cinematic end card: convergence flash → shockwave + anamorphic flare; the official logo (pixels untouched) on a floating ivory plaque that turns in from edge-on, one light sweep; slow god rays and orbit rings with travelling nodes behind; company name on screen; tagline lands word by word with the voice; CTA, website pill with a light running round its border, contact chips. Hold ≥ 3.5 s. | — |
 
 ## Rules held throughout
 

@@ -1,12 +1,13 @@
 /**
  * Voice-over timing master. Every cue in the film is looked up here by spoken word —
  * the numbers come from content/vo-timing.json (CTC forced alignment of the script
- * against assets/voiceover.mp3, see pipeline/align.py).
+ * against assets/voiceover.mp3, see pipeline/align.py; the spoken company name is
+ * cut out by pipeline/edit_vo.py).
  */
 import vo from '../../../content/vo-timing.json';
 
 export const FPS = 60;
-export const HOLD = 3.0; // clean CTA hold after the voice-over ends
+export const HOLD = 3.6; // clean CTA hold after the voice-over ends
 export const DURATION = Math.round((vo.duration + HOLD) * FPS) / FPS;
 export const TOTAL_FRAMES = Math.round(DURATION * FPS);
 
@@ -36,4 +37,7 @@ export const end = (text: string, nth = 1, after = 0) => {
   const next = words[w.i + 1];
   return next && next.phrase === w.phrase ? next.start : w.end;
 };
+/** Logo hit — inside the pause left where the company name was cut from the VO. */
+export const BRAND: number = (vo as {marks: {brand: number}}).marks.brand;
+
 export const phraseOf = (i: number) => phrases[i];

@@ -5,7 +5,7 @@ import {C} from '../brand';
 import {clamp, ease, lerp, noise1, ramp, rnd, W} from '../lib';
 import {Ar, At, CanvasLayer, glowSprite, GOLD_RGBA, La, Reveal} from '../ui';
 import {Flash, LightLeak, RGBSplit} from '../fx';
-import {at} from '../timing';
+import {at, BRAND} from '../timing';
 import {S8} from './S8Shipping';
 
 /** Scene 9 — the hero line: not just a supplier… a partner inside China. */
@@ -16,10 +16,10 @@ const T_OWN = at('امتلك');
 const T_PARTNER = at('شريكا');
 const T_INSIDE = at('داخل', 1, 41);
 const T_CHINA = at('الصين', 1, 41.5);
-export const T_NAME = at('guangzhou');
+export const T_NAME = BRAND;
 
 export const S9 = {start: S8.end - 0.02, end: T_NAME + 0.1};
-const T_CONV = T_NAME - 0.38;
+const T_CONV = T_NAME - 0.32;
 
 export const Scene9: React.FC<{t: number}> = ({t}) => {
   const dimSup = ramp(t, T_ONLY + 0.3, T_OWN, ease.soft);
