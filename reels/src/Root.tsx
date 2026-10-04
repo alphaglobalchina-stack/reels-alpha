@@ -4,6 +4,8 @@ import {loadFonts} from './fonts';
 import {detectAssets} from './lib/assets';
 import {Reel1, reel1Defaults, reel1Frames} from './reels/Reel1';
 import {theme} from './theme';
+import {AlphaOpening} from './film/AlphaOpening';
+import {FPS, TOTAL_FRAMES} from './film/timing';
 import {ReelProps} from './types';
 
 loadFonts();
@@ -26,6 +28,15 @@ export const RemotionRoot: React.FC = () => (
         durationInFrames: sum(reel1Frames(fps)),
         props: {...props, assets: await detectAssets()} as ReelProps,
       })}
+    />
+    <Composition
+      id="AlphaOpening"
+      component={AlphaOpening}
+      width={1080}
+      height={1920}
+      fps={FPS}
+      durationInFrames={TOTAL_FRAMES}
+      defaultProps={{audio: true, subtitles: true}}
     />
   </>
 );
