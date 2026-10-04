@@ -1,6 +1,11 @@
 """CTC forced alignment of the known Arabic script against the voice-over.
 Emissions: Meta Omnilingual ASR 300M CTC (sherpa-onnx export). Output: content/vo-timing.json"""
 import json, re, numpy as np, onnxruntime as ort, soundfile as sf, os
+import sys
+WAV = sys.argv[1] if len(sys.argv) > 1 else 'pipeline/work/vo16k.wav'
+LOG = sys.argv[3] if len(sys.argv) > 3 else 'pipeline/work/logits.npy'
+OUT = sys.argv[2] if len(sys.argv) > 2 else 'content/vo-timing.raw.json'
+SKIP = set(sys.argv[4].split(',')) if len(sys.argv) > 4 else set()
 M='/home/user/models/sherpa-onnx-omnilingual-asr-1600-languages-300M-ctc-int8-2025-11-12/'
 vocab={}
 for l in open(M+'tokens.txt',encoding='utf8'):
@@ -38,6 +43,7 @@ def norm(w):
 
 words=[]  # dict(text, phrase, tokens)
 for pi,(scene,p) in enumerate(PHRASES):
+  if str(pi) in SKIP: continue
   for raw in p.split(' '):
     disp, spoken = (raw.split('=',1) if '=' in raw else (raw, raw))
     toks=[vocab[c] for c in norm(spoken)]
@@ -45,10 +51,10 @@ for pi,(scene,p) in enumerate(PHRASES):
     words.append(dict(text=disp, phrase=pi, toks=toks))
 
 # emissions
-x,sr=sf.read('pipeline/work/vo16k.wav',dtype='float32')
-if os.path.exists('pipeline/work/logits.npy'): lg=np.load('pipeline/work/logits.npy')
+x,sr=sf.read(WAV,dtype='float32')
+if os.path.exists(LOG): lg=np.load(LOG)
 else:
-  s=ort.InferenceSession(M+'model.int8.onnx'); lg=s.run(None,{'x':((x-x.mean())/(x.std()+1e-7))[None]})[0][0]
+  s=ort.InferenceSession(M+'model.int8.onnx'); lg=s.run(None,{'x':((x-x.mean())/(x.std()+1e-7))[None]})[0][0]; np.save(LOG,lg)
 lp = lg - np.log(np.exp(lg - lg.max(-1,keepdims=True)).sum(-1,keepdims=True)) - lg.max(-1,keepdims=True)
 T=lp.shape[0]; fr = len(x)/sr/T
 # token sequence with optional space token between words
@@ -91,8 +97,9 @@ for wi,w in enumerate(words):
 phr=[]
 for pi,(scene,p) in enumerate(PHRASES):
   ws=[w for w in out_words if w['phrase']==pi]
+  if not ws: continue
   phr.append(dict(i=pi,scene=scene,text=' '.join(w['text'] for w in ws),start=ws[0]['start'],end=ws[-1]['end'],words=[w['i'] for w in ws]))
 dur=len(x)/sr
-json.dump(dict(source='assets/voiceover.mp3',duration=round(dur,3),frameSec=fr,aligner='Omnilingual-ASR 300M CTC, Viterbi forced alignment',phrases=phr,words=out_words),open('content/vo-timing.raw.json','w',encoding='utf8'),ensure_ascii=False,indent=1)
+json.dump(dict(source='assets/voiceover.mp3',duration=round(dur,3),frameSec=fr,aligner='Omnilingual-ASR 300M CTC, Viterbi forced alignment',phrases=phr,words=out_words),open(OUT,'w',encoding='utf8'),ensure_ascii=False,indent=1)
 for p in phr: print(f"{p['start']:6.2f}-{p['end']:6.2f} {p['scene']:4} {p['text']}")
 print('low conf:',[(w['text'],w['conf']) for w in out_words if w['conf']<0.2])

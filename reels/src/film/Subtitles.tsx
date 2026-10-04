@@ -1,16 +1,25 @@
 import React from 'react';
 import {C, FONT} from './brand';
 import {clamp, ramp} from './lib';
-import {phrases, words} from './timing';
+import {phrases as P1, words as W1} from './timing';
+
+type SubWord = {i: number; text: string; start: number; end: number};
+type SubPhrase = {start: number; end: number; scene: string; words: number[]};
 
 /**
  * Karaoke subtitle panel — one phrase at a time, current word glows gold.
  * Words are separate inline spans (never split inside a word, Arabic shaping intact).
  * Phrases whose words are already on screen as hero type are hidden.
  */
-const hidden = (i: number) => i === 0 || ['s9', 's10'].includes(phrases[i].scene);
 
-export const Subtitles: React.FC<{t: number; y?: number}> = ({t, y = 1508}) => {
+export const Subtitles: React.FC<{t: number; y?: number; phrases?: SubPhrase[]; words?: SubWord[]; hide?: (i: number, p: SubPhrase) => boolean}> = ({
+  t,
+  y = 1508,
+  phrases = P1,
+  words = W1,
+  hide = (i, p) => i === 0 || ['s9', 's10'].includes(p.scene),
+}) => {
+  const hidden = (i: number) => hide(i, phrases[i]);
   const idx = phrases.findIndex((p, i) => {
     const next = phrases[i + 1];
     const until = next ? Math.min(next.start - 0.08, p.end + 0.6) : p.end + 0.6;
