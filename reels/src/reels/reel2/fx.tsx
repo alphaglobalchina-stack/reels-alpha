@@ -224,35 +224,84 @@ export const Vignette: React.FC = () => (
 type Sub = {s: number; e: number; en: string; ar: string};
 const SUBS = vo.subtitles as Sub[];
 
+/**
+ * Arabic subtitles, karaoke style: the translated words appear one by one in step with
+ * the English voice (spread across the phrase's spoken span by word length); the word
+ * being "spoken" glows gold, a gold line under the card tracks the phrase's progress.
+ * Arabic words are never split, so letter joining stays intact.
+ */
 export const Subtitles: React.FC<{f: number}> = ({f}) => {
-  const cur = SUBS.find((s) => f >= sec(s.s) - 2 && f < sec(s.e) + 3);
+  const cur = SUBS.find((s) => f >= sec(s.s) - 3 && f < sec(s.e) + 4);
   if (!cur) return null;
-  const a = sec(cur.s) - 2;
-  const b = sec(cur.e) + 3;
-  const i = tw(f, a, 7, 'power3.out');
-  const o = tw(f, b - 5, 5, 'power2.in');
+  const a = sec(cur.s) - 3;
+  const b = sec(cur.e) + 4;
+  const inP = tw(f, a, 10, 'back.out(1.5)');
+  const outP = tw(f, b - 6, 6, 'power2.in');
+
+  const spoken = WORDS.filter((w) => w.s >= cur.s - 0.05 && w.s < cur.e);
+  const t0 = sec(spoken.length ? spoken[0].s : cur.s);
+  const t1 = sec(spoken.length ? spoken[spoken.length - 1].e : cur.e);
+  const words = cur.ar.split(' ').filter(Boolean);
+  const total = words.reduce((n, w) => n + w.length + 1, 0);
+  let acc = 0;
+  const starts = words.map((w) => {
+    const t = t0 + ((t1 - t0) * acc) / total;
+    acc += w.length + 1;
+    return t;
+  });
+  let current = -1;
+  starts.forEach((t, i) => {
+    if (f >= t - 2) current = i;
+  });
+  const done = f > t1 + 2;
+  const progress = Math.min(1, Math.max(0, (f - t0) / Math.max(1, t1 - t0)));
+
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: 1478, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
+    <div style={{position: 'absolute', left: 0, right: 0, top: 1452, display: 'flex', justifyContent: 'center', pointerEvents: 'none'}}>
       <div
-        dir="rtl"
         style={{
-          maxWidth: 900,
-          padding: '6px 26px 10px',
-          borderRadius: 14,
-          background: 'rgba(6,6,10,0.62)',
-          border: '1px solid rgba(242,210,122,0.25)',
-          opacity: i * (1 - o),
-          transform: `translateY(${(1 - i) * 14}px)`,
-          fontFamily: theme.fonts.arabic,
-          fontWeight: 700,
-          fontSize: 38,
-          lineHeight: 1.45,
-          color: '#FFFFFF',
-          textAlign: 'center',
-          direction: 'rtl',
+          position: 'relative',
+          maxWidth: 940,
+          padding: '12px 34px 18px',
+          borderRadius: 24,
+          background: 'linear-gradient(180deg, rgba(24,19,10,0.82), rgba(8,7,10,0.9))',
+          border: '1.5px solid rgba(242,210,122,0.38)',
+          boxShadow: '0 22px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08), 0 0 34px rgba(201,151,28,0.18)',
+          opacity: Math.min(1, inP * 1.4) * (1 - outP),
+          transform: `translateY(${(1 - inP) * 26 - outP * 14}px) scale(${0.92 + 0.08 * Math.min(1, inP)})`,
+          filter: inP < 0.95 || outP > 0 ? `blur(${(1 - Math.min(1, inP)) * 8 + outP * 6}px)` : undefined,
         }}
       >
-        {cur.ar}
+        <div dir="rtl" style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 14px', direction: 'rtl'}}>
+          {words.map((w, i) => {
+            const p = tw(f, starts[i] - 2, 8, 'expo.out');
+            const live = i === current && !done;
+            return (
+              <span
+                key={i}
+                style={{
+                  display: 'inline-block',
+                  fontFamily: theme.fonts.arabic,
+                  fontWeight: 800,
+                  fontSize: cur.ar.length > 40 ? 38 : 42,
+                  lineHeight: 1.55,
+                  color: '#FFFFFF',
+                  opacity: 0.28 + 0.72 * p,
+                  transform: `translateY(${(1 - p) * 10}px) scale(${live ? 1.06 : 1})`,
+                  textShadow: live ? undefined : '0 2px 10px rgba(0,0,0,0.6)',
+                  filter: live ? 'drop-shadow(0 0 12px rgba(242,210,122,0.55))' : undefined,
+                  ...(live ? GOLD_TEXT : {}),
+                }}
+              >
+                {w}
+              </span>
+            );
+          })}
+        </div>
+        {/* phrase progress, running right → left like the reading direction */}
+        <div style={{position: 'absolute', left: 26, right: 26, bottom: 9, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.1)', overflow: 'hidden'}}>
+          <div style={{position: 'absolute', right: 0, top: 0, bottom: 0, width: `${progress * 100}%`, background: 'linear-gradient(270deg, #FFF1C1, #F2D27A 40%, #C9971C)', boxShadow: '0 0 10px #F2D27A'}} />
+        </div>
       </div>
     </div>
   );
