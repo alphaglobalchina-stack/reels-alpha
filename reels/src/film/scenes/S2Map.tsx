@@ -67,7 +67,7 @@ export const Scene2: React.FC<{t: number}> = ({t}) => {
             ctx.stroke();
           }
           // land context
-          ctx.fillStyle = 'rgba(160,170,190,0.20)';
+          ctx.fillStyle = 'rgba(165,175,195,0.28)';
           for (const p of LAND) {
             const P = project(cam, p);
             if (P.d < 30 || P.x < -20 || P.x > W + 20 || P.y < -20 || P.y > H + 20) continue;
@@ -80,8 +80,8 @@ export const Scene2: React.FC<{t: number}> = ({t}) => {
             if (P.d < 30 || P.x < -20 || P.x > W + 20 || P.y < -20 || P.y > H + 20) continue;
             const dist = Math.hypot(p[0], p[2]);
             const near = clamp(1 - dist / 900) * pin;
-            const r = Math.min(14, 6.2 * P.s);
-            ctx.fillStyle = `rgba(${Math.round(200 + 40 * near)},${Math.round(160 + 50 * near)},${Math.round(80 + 60 * near)},${0.5 + 0.45 * near})`;
+            const r = Math.min(14, 7 * P.s);
+            ctx.fillStyle = `rgba(${Math.round(218 + 30 * near)},${Math.round(172 + 45 * near)},${Math.round(84 + 60 * near)},${0.74 + 0.26 * near})`;
             ctx.beginPath();
             ctx.arc(P.x, P.y, r / 2, 0, Math.PI * 2);
             ctx.fill();
