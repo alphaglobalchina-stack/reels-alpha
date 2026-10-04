@@ -4,7 +4,7 @@ import {C, FONT} from '../film/brand';
 import {back, Cam, clamp, CX, ease, lerp, noise1, project, ramp, rnd, V3, W} from '../film/lib';
 import {CanvasLayer} from '../film/ui';
 import {goldLine, Micro} from './kit';
-import {BRAND, HERO} from './plan';
+import {BRAND, HERO, SHIP} from './plan';
 import {Item, Stage, wordItem} from './stage';
 
 /**
@@ -19,7 +19,7 @@ const PLAQUE = {x: 540, y: 640, w: 940, h: 330};
 export const heroCam = (t: number): Cam => {
   const pass = ramp(t, HERO.sup + 0.25, HERO.own, (x) => x * x);
   const push = ramp(t, HERO.own, BRAND, ease.inOut);
-  return {pos: [lerp(60, -40, pass) + noise1(t * 30, 2) * 4 * shake(t), lerp(30, 0, pass), lerp(-200, 1500, pass) + 220 * push], roll: 0.012 * Math.sin(t * 0.7)};
+  return {pos: [lerp(60, -40, pass) + noise1(t * 30, 2) * 4 * shake(t), lerp(30, 0, pass), lerp(-200, 1240, pass) + 220 * push + 260 * ramp(t, SHIP.end - 0.1, HERO.sup + 0.25)], roll: 0.012 * Math.sin(t * 0.7)};
 };
 const shake = (t: number) => (t > HERO.partner && t < HERO.partner + 0.4 ? Math.pow(1 - (t - HERO.partner) / 0.4, 2) : 0);
 
@@ -44,6 +44,49 @@ export const ShotHero: React.FC<{t: number}> = ({t}) => {
       <div style={{position: 'absolute', left: 0, right: 0, top: 1300, display: 'flex', justifyContent: 'center', zIndex: 300000, opacity: ramp(t, HERO.china + 0.2, HERO.china + 0.5) * out}}>
         <Micro text="Your trade partner in China" color="rgba(240,211,138,0.92)" size={20} />
       </div>
+      {/* the breath: the ship's wake line contracts into one gold point that searches the dark,
+          then travels to "مُوَرِّد"; a slow drift through depth keeps the vacuum alive */}
+      {t < HERO.own && (
+        <div style={{position: 'absolute', inset: 0, zIndex: 140000}}>
+          <CanvasLayer
+            draw={(ctx) => {
+              ctx.globalCompositeOperation = 'lighter';
+              const fld = ramp(t, SHIP.end - 0.1, HERO.dont + 0.3) * (1 - ramp(t, HERO.sup + 0.3, HERO.own));
+              for (let i = 0; i < 140; i++) {
+                const q = project(cam, [(rnd(i * 1.7) - 0.5) * 3000, (rnd(i * 3.9) - 0.5) * 4200, 300 + rnd(i * 5.3) * 5200]);
+                if (q.d < 60) continue;
+                ctx.fillStyle = `rgba(246,238,222,${0.3 * fld * (0.45 + 0.55 * Math.sin(t * 2.4 + i * 1.3))})`;
+                ctx.beginPath();
+                ctx.arc(q.x, q.y, Math.max(1, 2.4 * q.s), 0, Math.PI * 2);
+                ctx.fill();
+              }
+              ctx.globalCompositeOperation = 'source-over';
+              const c = ramp(t, SHIP.end - 0.05, HERO.dont + 0.15, ease.inOut);
+              const go = ramp(t, HERO.sup - 0.32, HERO.sup + 0.02, ease.inOut);
+              const sp = project(cam, SUP);
+              const px = lerp(CX, sp.x, go), py = lerp(960, sp.y + 70, go);
+              const fade = 1 - ramp(t, HERO.sup, HERO.sup + 0.3);
+              if (c < 1) goldLine(ctx, [{x: CX, y: lerp(1960, 960, c)}, {x: CX, y: 960}], 1, 1 - c * 0.3, 2.6, false);
+              if (fade <= 0) return;
+              const g = ctx.createRadialGradient(px, py, 0, px, py, 46);
+              g.addColorStop(0, `rgba(255,232,170,${0.9 * fade})`);
+              g.addColorStop(0.2, `rgba(240,211,138,${0.45 * fade})`);
+              g.addColorStop(1, 'rgba(240,211,138,0)');
+              ctx.fillStyle = g;
+              ctx.fillRect(px - 50, py - 50, 100, 100);
+              for (let k = 0; k < 2; k++) {
+                const ph = ((t - HERO.dont) * 1.4 + k * 0.5) % 1;
+                if (t < HERO.dont || go > 0.5) continue;
+                ctx.strokeStyle = `rgba(240,211,138,${0.45 * (1 - ph) * fade})`;
+                ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                ctx.arc(px, py, 10 + ph * 110, 0, Math.PI * 2);
+                ctx.stroke();
+              }
+            }}
+          />
+        </div>
+      )}
       {/* convergence: every route / node / path of the film collapses into the logo frame */}
       {conv > 0 && (
         <div style={{position: 'absolute', inset: 0, zIndex: 400000}}>
