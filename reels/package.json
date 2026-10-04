@@ -19,11 +19,17 @@
     "@remotion/paths": "^4.0.532",
     "@remotion/shapes": "^4.0.532",
     "@remotion/transitions": "^4.0.532",
+    "@types/d3-geo": "^3.1.1",
+    "@types/topojson-client": "^3.1.5",
+    "d3-geo": "^3.1.1",
+    "gsap": "^3.15.0",
     "lucide": "^1.49.0",
     "lucide-react": "^1.49.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "remotion": "^4.0.532"
+    "remotion": "^4.0.532",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",
