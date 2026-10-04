@@ -9,7 +9,7 @@
     "render:reel3": "remotion render Reel3 ../out/reel3.mp4 --codec=h264",
     "render:all": "npm run render:reel1 && npm run render:reel2 && npm run render:reel3",
     "typecheck": "tsc --noEmit",
-    "render:alpha": "remotion render AlphaOpening ../out/alpha-opening-1080x1920-60fps.mp4 --codec=h264 --crf=19 --audio-codec=aac --audio-bitrate=256k",
+    "render:alpha": "remotion render AlphaOpening ../out/alpha-opening-1080x1920-60fps.mp4 --codec=h264 --crf=19 --audio-codec=aac --audio-bitrate=256k --pixel-format=yuv420p && ffmpeg -y -i ../out/alpha-opening-1080x1920-60fps.mp4 -vf scale=in_range=pc:out_range=tv,format=yuv420p -c:v libx264 -crf 17 -preset slow -movflags +faststart -c:a copy ../out/.tmp60.mp4 && mv ../out/.tmp60.mp4 ../out/alpha-opening-1080x1920-60fps.mp4",
     "render:alpha30": "ffmpeg -y -i ../out/alpha-opening-1080x1920-60fps.mp4 -vf fps=30 -c:v libx264 -crf 21 -preset slow -pix_fmt yuv420p -movflags +faststart -c:a copy ../out/alpha-opening-1080x1920-30fps.mp4",
     "sound:alpha": "cd .. && python3 pipeline/sound.py"
   },
