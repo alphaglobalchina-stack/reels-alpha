@@ -10,6 +10,8 @@ import {AlphaV2} from './v2/AlphaV2';
 import {PREVIEW_END} from './v2/t2';
 import {SouqCalib} from './v2/shots/C_Market';
 import {AlphaV3} from './v3/AlphaV3';
+import {AlphaFinal} from './final/AlphaFinal';
+import {TOTAL_FRAMES as FINAL_FRAMES} from './final/plan';
 import {ReelProps} from './types';
 
 loadFonts();
@@ -59,6 +61,15 @@ export const RemotionRoot: React.FC = () => (
       fps={60}
       durationInFrames={Math.round(PREVIEW_END * 60)}
       defaultProps={{audio: true, subtitles: true}}
+    />
+    <Composition
+      id="AlphaFinal"
+      component={AlphaFinal}
+      width={1080}
+      height={1920}
+      fps={60}
+      durationInFrames={FINAL_FRAMES}
+      defaultProps={{audio: true}}
     />
     <Composition id="SouqCalib" component={SouqCalib} width={1080} height={1920} fps={60} durationInFrames={1} />
   </>

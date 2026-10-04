@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 S=/tmp/claude-0/-home-user-reels-alpha/0a37cbb2-bd10-5f73-ae82-bdc71fd07126/scratchpad/stills
 mkdir -p $S; name=$1; shift; files=()
 for s in "$@"; do f=$(python3 -c "print(round($s*60))"); out=$S/${name}_$f.jpg
-  npx remotion still ${COMP:-AlphaOpening} $out --frame=$f --props='{"audio":false,"subtitles":true}' --log=error --scale=0.5 >/dev/null 2>&1 || echo "fail $s"; files+=($out); done
+  npx remotion still ${COMP:-AlphaOpening} $out --frame=$f --props='{"audio":false,"subtitles":false}' --log=error --scale=0.5 >/dev/null 2>&1 || echo "fail $s"; files+=($out); done
 python3 - "$S/${name}_sheet.jpg" "${files[@]}" <<'PY'
 import sys
 from PIL import Image, ImageDraw
