@@ -75,7 +75,7 @@ export const ShotA: React.FC<{t: number}> = ({t}) => {
   const China = (
     <div style={{position: 'absolute', left: -200, right: -200, top: 500, display: 'flex', justifyContent: 'center', transform: `perspective(1400px) rotateX(${lerp(16, 3, ramp(t, 0, T.but))}deg) scale(${chinaScale})`, transformOrigin: '50% 30%', opacity: 1 - ramp(t, T.but + 0.32, T.but + 0.5), filter: fly > 0.02 ? `blur(${fly * 26}px)` : undefined}}>
       <div style={{filter: 'drop-shadow(0 0 2px rgba(60,35,0,0.9)) drop-shadow(0 16px 44px rgba(0,0,0,0.75)) brightness(1.25) contrast(1.1)'}}>
-        <Ar size={430} weight={900} gold shimmer={ramp(t, 0.1, 1.3, ease.inOut)} lh={1.05}>
+        <Ar size={370} weight={900} gold shimmer={ramp(t, 0.1, 1.3, ease.inOut)} lh={1.05}>
           الصين
         </Ar>
       </div>
@@ -97,7 +97,7 @@ export const ShotA: React.FC<{t: number}> = ({t}) => {
       </AbsoluteFill>
       {chinaOnTop && China}
       <div style={{position: 'absolute', left: 0, right: 0, top: 960, display: 'flex', justifyContent: 'center', opacity: ramp(t, 0, 0.01) * (1 - ramp(t, T.but - 0.1, T.but + 0.2))}}>
-        <div style={{transform: `translateY(${(1 - ramp(t, T.opp - 0.35, T.opp + 0.15, (x) => back(x, 1.4))) * 40}px)`, opacity: 0.25 + 0.75 * ramp(t, T.opp - 0.35, T.opp)}}>
+        <div style={{transform: `translateY(${(1 - ramp(t, T.opp - 0.35, T.opp + 0.15, (x) => back(x, 1.4))) * 40}px)`, opacity: ramp(t, T.opp - 0.38, T.opp - 0.2), filter: `blur(${(1 - ramp(t, T.opp - 0.38, T.opp - 0.1)) * 12}px)`}}>
           <Ar size={92} weight={800} color={C.white} style={{textShadow: '0 8px 30px rgba(0,0,0,0.7)'}}>
             مليئة <span style={{color: C.goldLight}}>بالفُرَص</span>
           </Ar>

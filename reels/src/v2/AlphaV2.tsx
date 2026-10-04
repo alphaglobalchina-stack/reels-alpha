@@ -16,7 +16,7 @@ export type AlphaV2Props = {audio: boolean; subtitles: boolean};
 export const HITS: Hit[] = [
   {t: TA.sup, shake: 0.35, rgb: 4},
   {t: TA.right, shake: 1.0, rgb: 12, flash: 0.3},
-  {t: A_END, shake: 0.7, rgb: 14, flash: 0.6},
+  {t: A_END, shake: 0.7, rgb: 14, flash: 0.35},
   {t: B.start + 0.75, shake: 0.3, rgb: 0},
   {t: B_DIVE_END, shake: 0.4, rgb: 6},
   {t: PORTAL.land, shake: 0.55, rgb: 8, flash: 0.12},
@@ -69,7 +69,7 @@ const World: React.FC = () => {
       <Anamorphic t={t} at={TA.right} y={tp.y} x={tp.x} strength={0.8} />
       <Anamorphic t={t} at={PORTAL.land} y={1010} strength={0.6} />
       <Anamorphic t={t} at={BEATS[3].t} y={980} strength={0.7} />
-      <LightLeak t={t} at={A_END - 0.3} dur={0.9} strength={0.35} />
+      <LightLeak t={t} at={A_END - 0.3} dur={0.9} strength={0.2} />
       <LightLeak t={t} at={PORTAL.go} dur={0.8} x0={110} x1={-10} y={35} strength={0.35} />
       <WipeFlash k={hs.flash} />
     </AbsoluteFill>

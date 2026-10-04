@@ -163,9 +163,9 @@ export const ShotE: React.FC<{t: number}> = ({t}) => {
       {/* beat words */}
       {BEATS.map((b, i) => {
         const next = BEATS[i + 1]?.t ?? 99;
-        if (t < b.t - 0.03 || t > next + 0.18) return null;
-        const p = ramp(t, b.t - 0.03, b.t + 0.2, (x) => back(x, 1.7));
-        const out = ramp(t, next - 0.04, next + 0.16, (x) => x * x);
+        if (t < b.t - 0.01 || t > next + 0.03) return null;
+        const p = ramp(t, b.t - 0.01, b.t + 0.2, (x) => back(x, 1.7));
+        const out = ramp(t, next - 0.1, next + 0.02, (x) => x * x);
         return (
           <div key={b.en} style={{position: 'absolute', left: 0, right: 0, top: 330, display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 400000, opacity: clamp(p * 1.6) * (1 - out), transform: `scale(${lerp(2.4, 1, p) * (1 + out * 2.2)})`, filter: (1 - p) * 14 + out * 16 > 0.4 ? `blur(${((1 - p) * 14 + out * 16).toFixed(1)}px)` : undefined}}>
             <div style={{fontFamily: FONT.la, fontWeight: 800, fontSize: 116, letterSpacing: '0.1em', color: i === 3 ? C.goldLight : C.white, textTransform: 'uppercase', textShadow: '0 10px 40px rgba(0,0,0,0.7)', lineHeight: 1}}>{b.en}</div>
