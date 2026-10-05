@@ -60,6 +60,15 @@
       "from": 490,
       "to": 512
     },
+    "stampTargets": {
+      "prevStops": [
+        "ticket",
+        "stamp1",
+        "stamp2"
+      ],
+      "preLead": 30,
+      "preRamp": 12
+    },
     "planeVisible": [
       148,
       256
@@ -114,5 +123,18 @@
       "assets/music.mp3",
       "../assets/music.mp3"
     ]
+  },
+  "counters": {
+    "fadeFrames": 2,
+    "fastRate": 0.5,
+    "driftEm": 0.12,
+    "ticketEase": {
+      "a": 0.3,
+      "b": 0.7
+    },
+    "priceEase": {
+      "a": 0.04,
+      "b": 0.96
+    }
   }
 }

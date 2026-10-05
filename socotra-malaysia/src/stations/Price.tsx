@@ -1,8 +1,9 @@
 import React from 'react';
-import {COLORS, EVENTS, FONTS, LAYOUT, TEXT} from '../data';
+import {COLORS, COUNTERS, EVENTS, FONTS, LAYOUT, TEXT} from '../data';
 import {CameraState} from '../lib/camera';
-import {clamp, easeOutCubic, rand, smoothstep} from '../lib/math';
-import {DigitColumn} from '../components/Odometer';
+import {clamp, rand, smoothstep} from '../lib/math';
+import {columnAt, CountDigit} from '../components/Odometer';
+import {GlassPlinth} from '../components/Glass';
 import {WindowSvg} from '../layers/WindowSvg';
 import {Station} from './Station';
 
@@ -10,13 +11,20 @@ const P = LAYOUT.price;
 const R = P.d / 2;
 const NUM = 196; // Sora size of 5,950
 
-// slot-machine style: every column lands at the same moment, faster columns spin extra turns
-const COLUMNS = [
-  {target: 5, turns: 0},
-  {target: 9, turns: 1},
-  {target: 5, turns: 2},
-  {target: 0, turns: 3},
-];
+const GLASS_Y = P.y + R + P.glassDy; // glass plane just under the hovering disc
+const REFL_TOP = 2 * GLASS_Y - (P.y + R); // top of the mirrored disc on the glass
+const DIGIT_W = NUM * 0.66; // fixed column width: nothing shifts while counting
+// "0,000" → "5,950": thousands / hundreds / tens / units columns of one continuous value.
+const UNITS = [1000, 100, 10, 1];
+const PC = EVENTS.priceCount;
+// strong ease-out with a small residual end speed (≈ 9 /frame): the last tens / units switches
+// are fast → hard per-frame switches, so 5,950 is complete and crisp exactly on frame PC.to.
+// The hundreds' last change (→ 9) happens ≈ 444, its soft crossfade is done by 447.
+const priceEase = (t: number) => {
+  const u = clamp(t);
+  return COUNTERS.priceEase.a * u + COUNTERS.priceEase.b * (1 - Math.pow(1 - u, 3));
+};
+const priceAt = (f: number) => TEXT.price.value * priceEase((f - PC.from) / (PC.to - PC.from));
 
 const digitStyle: React.CSSProperties = {
   backgroundImage: 'linear-gradient(180deg, #FFF6DF 0%, #EBD6A6 55%, #CDAE70 100%)',
@@ -70,12 +78,45 @@ const Coins: React.FC<{frame: number}> = ({frame}) => (
 /** Station 5 — the only dark element: a large graphite disc with the price counting up. */
 export const PriceStation: React.FC<{frame: number; cam: CameraState}> = ({frame, cam}) => {
   const c = EVENTS.priceCount;
-  const k = easeOutCubic(clamp((frame - c.from) / (c.to - c.from)));
+  const cols = UNITS.map((u) => columnAt(priceAt, frame, u));
   const shine = clamp((frame - EVENTS.priceShine) / 22);
   const landed = smoothstep(c.to - 4, c.to + 6, frame);
   const breathe = 1 + 0.008 * Math.sin(frame / 18);
   return (
     <Station cam={cam} top={P.y - R - 700} bottom={P.y + R + 200} focus={{x: P.x, y: P.y}}>
+      {/* the disc hovers just above a glass plinth: soft long shadow + faint mirrored disc */}
+      <GlassPlinth
+        id="price-glass"
+        cx={P.x}
+        cy={GLASS_Y}
+        rx={400}
+        ry={60}
+        thickness={10}
+        sheen={0.8}
+        glow={0.35 * landed}
+        shadows={[
+          {dx: 80, dy: 40, rx: 560, ry: 80, opacity: 0.1},
+          {dx: 0, dy: 18, rx: 420, ry: 50, opacity: 0.09},
+        ]}
+        reflection={
+          <>
+            <defs>
+              <linearGradient id="price-refl" gradientUnits="userSpaceOnUse" x1="0" y1={REFL_TOP} x2="0" y2={REFL_TOP + 46}>
+                <stop offset="0" stopColor={COLORS.ink} stopOpacity={0.16} />
+                <stop offset="0.5" stopColor={COLORS.ink} stopOpacity={0.05} />
+                <stop offset="1" stopColor={COLORS.ink} stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="price-refl-ring" gradientUnits="userSpaceOnUse" x1="0" y1={REFL_TOP} x2="0" y2={REFL_TOP + 40}>
+                <stop offset="0" stopColor={COLORS.champagneDeep} stopOpacity={0.35 + 0.3 * landed} />
+                <stop offset="1" stopColor={COLORS.champagneDeep} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            {/* mirror of the disc about the glass plane (y = GLASS_Y) */}
+            <circle cx={P.x} cy={2 * GLASS_Y - P.y} r={R * breathe} fill="url(#price-refl)" />
+            <circle cx={P.x} cy={2 * GLASS_Y - P.y} r={R * breathe + 4} fill="none" stroke="url(#price-refl-ring)" strokeWidth={3} />
+          </>
+        }
+      />
       <Coins frame={frame} />
       <div
         style={{
@@ -108,10 +149,10 @@ export const PriceStation: React.FC<{frame: number; cam: CameraState}> = ({frame
             direction: 'ltr',
           }}
         >
-          <DigitColumn value={COLUMNS[0].target * k} size={NUM} width={NUM * 0.66} style={{}} digitStyle={digitStyle} />
+          <CountDigit {...cols[0]} size={NUM} width={DIGIT_W} digitStyle={digitStyle} />
           <span style={{fontFamily: FONTS.latin, fontWeight: 700, fontSize: NUM, lineHeight: `${NUM * 1.12}px`, width: NUM * 0.3, textAlign: 'center', ...digitStyle}}>,</span>
-          {COLUMNS.slice(1).map((col, i) => (
-            <DigitColumn key={i} value={(col.target + col.turns * 10) * k} size={NUM} width={NUM * 0.66} digitStyle={digitStyle} />
+          {cols.slice(1).map((col, i) => (
+            <CountDigit key={i} {...col} size={NUM} width={DIGIT_W} digitStyle={digitStyle} />
           ))}
         </div>
         {/* currency */}

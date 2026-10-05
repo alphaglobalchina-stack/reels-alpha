@@ -3,10 +3,14 @@ import {Img, staticFile} from 'remotion';
 import {COLORS, EVENTS, FONTS, IMAGES, LAYOUT, TEXT} from '../data';
 import {CameraState} from '../lib/camera';
 import {clamp, smoothstep} from '../lib/math';
+import {GlassPanel} from '../components/Glass';
 import {Station} from './Station';
 
 const B = LAYOUT.booking;
 const CTA_X = 540 - B.ctaW / 2;
+// one subtle frosted-glass panel behind the four contact rows (station-local px)
+const ROWS_H = TEXT.contacts.length * B.rowH + (TEXT.contacts.length - 1) * B.rowGap;
+const PANEL = {x: B.panel.x, w: B.panel.w, y: B.rowsTop - B.panel.padY, h: ROWS_H + 2 * B.panel.padY, r: B.panel.r};
 // outline of the bar starting at its right cap (where the thread ends), running clockwise
 const tracePath = (() => {
   const r = B.ctaH / 2;
@@ -203,6 +207,9 @@ export const BookingStation: React.FC<{frame: number; cam: CameraState}> = ({fra
             </defs>
           </svg>
         </div>
+
+        {/* frosted glass behind the contact rows (brightens the backdrop → higher text contrast) */}
+        <GlassPanel id="booking-glass" x={PANEL.x} y={PANEL.y} w={PANEL.w} h={PANEL.h} r={PANEL.r} opacity={smoothstep(470, 494, frame)} />
 
         {/* contact rows */}
         <div style={{position: 'absolute', top: B.rowsTop, left: 0, width: 1080, display: 'flex', justifyContent: 'center'}}>

@@ -4,11 +4,15 @@ import {COLORS, EVENTS, FONTS, LAYOUT, TEXT, VIDEO} from '../data';
 import {CameraState} from '../lib/camera';
 import {clamp, smoothstep} from '../lib/math';
 import {Icon3D} from '../components/Icon3D';
+import {GlassPlinth} from '../components/Glass';
 import {FEATURE_ICONS} from '../components/icons';
 import {Station} from './Station';
 
 const D = LAYOUT.discD;
 const ICON = LAYOUT.iconSize;
+// small glass ellipse each disc hovers over (disc-local px) + label below it
+const GLASS = {cy: D + LAYOUT.featureGlass.dy, rx: LAYOUT.featureGlass.rx, ry: LAYOUT.featureGlass.ry, th: LAYOUT.featureGlass.th};
+const LABEL_TOP = D + LAYOUT.featureLabelGap;
 
 const Disc: React.FC<{k: number; frame: number}> = ({k, frame}) => {
   const T = EVENTS.featureFocus[k];
@@ -24,7 +28,23 @@ const Disc: React.FC<{k: number; frame: number}> = ({k, frame}) => {
   const glow = 0.25 + 0.75 * focus;
   const bob = Math.sin(frame / 20 + k) * 4;
   return (
-    <div style={{position: 'relative', width: D, height: D + 120, transform: `translateY(${bob}px)`}}>
+    <div style={{position: 'relative', width: D, height: D + 140}}>
+      {/* glass ellipse + long soft shadow running away from the light */}
+      <GlassPlinth
+        id={`feat-glass-${k}`}
+        cx={D / 2}
+        cy={GLASS.cy}
+        rx={GLASS.rx}
+        ry={GLASS.ry}
+        thickness={GLASS.th}
+        sheen={0.7}
+        glow={0.5 * focus}
+        shadows={[
+          {dx: 110, dy: 34, rx: 300, ry: 44, opacity: 0.075}, // extended, very soft (light from the upper left)
+          {dx: 28, dy: 14, rx: 190, ry: 28, opacity: 0.1},
+        ]}
+      />
+      <div style={{position: 'absolute', left: 0, top: 0, width: D, height: D, transform: `translateY(${bob}px)`}}>
       <div
         style={{
           position: 'absolute',
@@ -61,12 +81,13 @@ const Disc: React.FC<{k: number; frame: number}> = ({k, frame}) => {
           <Icon3D id={`feat-${k}`} def={FEATURE_ICONS[k]} size={ICON} ry={ry} rx={rx} depth={16} layers={10} side={['#EFE6D2', '#C2A874']} shine={shine} />
         </div>
       </div>
+      </div>
       <div
         style={{
           position: 'absolute',
           left: D / 2 - 300,
           width: 600,
-          top: D + 26,
+          top: LABEL_TOP,
           textAlign: 'center',
           direction: 'rtl',
           fontFamily: FONTS.arabic,
@@ -87,7 +108,7 @@ const Disc: React.FC<{k: number; frame: number}> = ({k, frame}) => {
 export const FeaturesStation: React.FC<{frame: number; cam: CameraState}> = ({frame, cam}) => (
   <>
     {LAYOUT.features.map((p, k) => (
-      <Station key={k} cam={cam} top={p.y - D / 2 - 60} bottom={p.y + D / 2 + 160} focus={{x: p.x, y: p.y + 40}}>
+      <Station key={k} cam={cam} top={p.y - D / 2 - 60} bottom={p.y + D / 2 + 180} focus={{x: p.x, y: p.y + 40}}>
         <div style={{position: 'absolute', left: p.x - D / 2, top: p.y - D / 2, opacity: 0.7 + 0.3 * smoothstep(-80, -30, frame - EVENTS.featureFocus[k])}}>
           <Disc k={k} frame={frame} />
         </div>

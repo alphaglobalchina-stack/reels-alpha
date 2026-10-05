@@ -1,12 +1,12 @@
 """Image preparation for the Malaysia reel.
 
 * towers-cutout.png : Petronas Twin Towers cut out of petronas-kl.webp
-  (per-row silhouette, 2px edge shrink, 1px feather -> no sky halo).
+  (per-row silhouette, 2px edge shrink, 1px feather -> no sky halo; greenish/teal pixels desaturated).
 * logo-emblem.png   : gold tree/plane emblem lifted off the black logo background.
 * city photos       : re-encoded at full frame (4:5, no crop). Langkawi gets a gentle
   warm grade that pulls the foliage away from saturated green (brand rule: no green).
 * grain.png         : near-invisible canvas grain tile.
-Run: python3 scripts/prep_images.py
+Run: python3 scripts/prep_images.py   (towers only: python3 -c "import sys; sys.path.insert(0, 'scripts'); import prep_images; prep_images.towers()")
 """
 import numpy as np
 from PIL import Image, ImageFilter
@@ -14,6 +14,23 @@ from scipy.ndimage import median_filter, gaussian_filter
 
 SRC = 'assets-src'
 OUT = 'public/img'
+
+
+def no_green(im):
+    """Brand rule (no green): desaturate the few greenish / teal pixels (hue ~70-200 deg), e.g. the
+    teal light at the centre of the sky bridge and the dark greenish facade glints. Hue and value
+    are kept; saturation x 0.12 in the band, soft edges 60-70 and 190-205 deg (continuous, so no
+    pixel is ever pushed towards green). Works on float RGB in 0..1."""
+    mx = im.max(-1)
+    mn = im.min(-1)
+    c = mx - mn
+    r, g, b = im[..., 0], im[..., 1], im[..., 2]
+    safe = np.where(c > 1e-6, c, 1)
+    h = np.where(mx == r, ((g - b) / safe) % 6, np.where(mx == g, (b - r) / safe + 2, (r - g) / safe + 4)) * 60
+    h = np.where(c > 1e-6, h, 0)
+    w = np.clip((h - 60) / 10, 0, 1) * np.clip((205 - h) / 15, 0, 1)
+    f = 1 - 0.88 * w
+    return mx[..., None] - f[..., None] * (mx[..., None] - im)
 
 
 def towers():
@@ -79,13 +96,25 @@ def towers():
         d.line([(a[0] * 4, a[1] * 4), (b[0] * 4, b[1] * 4)], fill=255, width=12)
     legs = np.asarray(li.resize((W, H), Image.LANCZOS)).astype(float) / 255
     alpha = np.maximum(alpha, legs * 0.95)
+    # bottom rows = tower shafts only. Behind the left tower's inner edge the lit (saturated
+    # orange) building shows from y~784, and the podium dome rises between the shafts from
+    # y~834: pull both inner edges in so none of it leaks into the cut-out.
+    xs = np.arange(W).astype(float)
+    for y in range(770, 872):
+        t = np.clip((y - 770) / 14, 0, 1)
+        u = np.clip((y - 826) / 8, 0, 1)
+        xr = 546.5 - 2.7 * t  # left tower, inner (right) edge: 546.5 -> 543.8
+        xl = 634.0 + 1.0 * u  # right tower, inner (left) edge: 634 -> 635 at the dome
+        alpha[y, 500:590] *= np.clip(xr - xs[500:590] + 0.5, 0, 1)
+        alpha[y, 590:700] *= np.clip(xs[590:700] - xl + 0.5, 0, 1)
     alpha = gaussian_filter(alpha, 0.6)
     alpha[:, :] = np.clip(alpha, 0, 1)
-    # fade the base into nothing (title sits on top of it)
-    ys = np.arange(H)[:, None]
-    alpha *= np.clip((872 - ys) / 260, 0, 1) ** 1.2
-    rgba = np.dstack([im, alpha])
-    x0, x1, y0, y1 = 414, 756, 18, 872
+    # crop: 342 x 834 (matches IMAGES.towers). The base is NOT faded: the towers stand fully
+    # opaque on the glass floor; only the last two rows get a soft edge against aliasing.
+    x0, x1, y0, y1 = 414, 756, 18, 852
+    alpha[y1 - 2] *= 0.72
+    alpha[y1 - 1] *= 0.36
+    rgba = np.dstack([no_green(im), alpha])
     out = (rgba[y0:y1, x0:x1] * 255).round().astype(np.uint8)
     Image.fromarray(out, 'RGBA').save(f'{OUT}/towers-cutout.png', optimize=True)
     print('towers-cutout', out.shape)

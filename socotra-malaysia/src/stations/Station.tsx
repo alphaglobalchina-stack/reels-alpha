@@ -1,4 +1,5 @@
 import React from 'react';
+import {DOF} from '../data';
 import {CameraState, toScreen} from '../lib/camera';
 import {clamp} from '../lib/math';
 
@@ -31,6 +32,9 @@ export const Station: React.FC<{
   if (!inView(cam, top, bottom)) return null;
   const b = blur ? dofBlur(cam, focus.x, focus.y) : 0;
   const fade = blur ? clamp((b - 1.2) / 2) : 0; // far-away stations also recede in contrast
+  // Perf: a sub-pixel blur is invisible but still costs a filter pass over the whole station box, so
+  // none below 0.6 px (ramping back to the true value by 1.2 px, no pop), and capped at 2.4 px.
+  const bf = b <= DOF.min ? 0 : b < DOF.ramp ? ((b - DOF.min) * DOF.ramp) / (DOF.ramp - DOF.min) : Math.min(b, DOF.max);
   return (
     <div
       style={{
@@ -39,7 +43,7 @@ export const Station: React.FC<{
         top,
         width: 1080,
         height: bottom - top,
-        filter: b > 0.08 ? `blur(${b.toFixed(2)}px)` : undefined,
+        filter: bf > 0.08 ? `blur(${bf.toFixed(2)}px)` : undefined,
         opacity: 1 - 0.5 * fade,
       }}
     >

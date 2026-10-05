@@ -2,6 +2,7 @@ import React from 'react';
 import {COLORS, WORLD} from '../data';
 import {CameraState} from '../lib/camera';
 import {rand} from '../lib/math';
+import {deepen, paletteAt, rgba} from './Atmosphere';
 import {viewWindow, WindowSvg} from './WindowSvg';
 
 // Fast layer (parallax 1.35): small champagne motes and soft bokeh that drift past the lens.
@@ -21,12 +22,36 @@ const motes = Array.from({length: 64}, (_, i) => {
   };
 });
 
+// FRONT bokeh: big defocused discs right at the lens, only at the left / right edges (never on copy).
+// One every ~1400 px of foreground space, so 1–2 are in frame at any time.
+const bigBokeh = Array.from({length: 10}, (_, i) => {
+  const left = i % 2 === 0 ? rand(i + 7100) > 0.25 : rand(i + 7100) > 0.75;
+  return {
+    x: left ? rand(i + 7200) * 120 : 960 + rand(i + 7300) * 120,
+    y: -1700 + i * 1400 + rand(i + 7400) * 500,
+    r: 50 + rand(i + 7500) * 50,
+    o: 0.1 + rand(i + 7600) * 0.06, // <= 0.16
+    c: i % 4,
+    ph: rand(i + 7700) * 6.28,
+  };
+});
+
 export const Foreground: React.FC<{frame: number; cam: CameraState}> = ({frame, cam}) => {
   const p = WORLD.fgParallax;
   const win = viewWindow(540 + (cam.x - 540) * p, WORLD.parallaxRef + (cam.y - WORLD.parallaxRef) * p, 1 + (cam.zoom - 1) * p, 200);
+  const tints = paletteAt(frame).map((c) => deepen(c, 1.6));
+  const t = frame / 30;
   return (
   <WindowSvg win={win}>
     <defs>
+      {tints.map((c, i) => (
+        <radialGradient key={i} id={`fg-big-${i}`}>
+          <stop offset="0" stopColor={rgba(c, 1)} stopOpacity={0.55} />
+          <stop offset="0.78" stopColor={COLORS.champagne} stopOpacity={0.75} />
+          <stop offset="0.92" stopColor={COLORS.champagne} stopOpacity={1} />
+          <stop offset="1" stopColor={COLORS.champagne} stopOpacity={0} />
+        </radialGradient>
+      ))}
       <radialGradient id="fg-bokeh">
         <stop offset="0" stopColor={COLORS.white} stopOpacity={0.9} />
         <stop offset="0.45" stopColor={COLORS.champagne} stopOpacity={0.7} />
@@ -38,6 +63,16 @@ export const Foreground: React.FC<{frame: number; cam: CameraState}> = ({frame, 
         <stop offset="1" stopColor={COLORS.champagneDeep} stopOpacity={0} />
       </radialGradient>
     </defs>
+    {bigBokeh.filter((b) => b.y + b.r + 40 > win.y && b.y - b.r - 40 < win.y + win.h).map((b, i) => (
+      <circle
+        key={`big${i}`}
+        cx={(b.x + Math.sin(t * 0.55 + b.ph) * 16).toFixed(1)}
+        cy={(b.y + Math.cos(t * 0.42 + b.ph) * 22).toFixed(1)}
+        r={(b.r * (1 + 0.06 * Math.sin(t * 0.8 + b.ph))).toFixed(1)}
+        fill={`url(#fg-big-${b.c})`}
+        opacity={(b.o * (0.8 + 0.2 * Math.sin(t * 1.1 + b.ph))).toFixed(3)}
+      />
+    ))}
     {motes.filter((m) => m.y + 60 > win.y && m.y - 60 < win.y + win.h).map((m, i) => {
       const t = (frame / 30) * m.sp + m.ph;
       return (

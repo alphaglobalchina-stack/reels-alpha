@@ -1,8 +1,9 @@
 import React from 'react';
-import {COLORS, EVENTS, FONTS, LAYOUT, TEXT} from '../data';
+import {COLORS, COUNTERS, EVENTS, FONTS, LAYOUT, TEXT} from '../data';
 import {CameraState, threadS} from '../lib/camera';
-import {clamp, easeOutCubic, smoothstep} from '../lib/math';
-import {DigitColumn} from '../components/Odometer';
+import {clamp, smoothstep} from '../lib/math';
+import {columnAt, ColumnState, CountDigit, FADE_FRAMES} from '../components/Odometer';
+import {GlassPlinth} from '../components/Glass';
 import {Icon3D} from '../components/Icon3D';
 import {heartsIcon} from '../components/icons';
 import {ThreadFront} from '../layers/Thread';
@@ -17,6 +18,7 @@ const EY = T.eyeletY - Y0; // eyelet, local y
 const NOTCH = 30;
 const R = 36;
 const SC = 9; // perforation bite radius
+const GLASS_Y = T.ribbonY + T.glassDy; // centre of the glass plane under the ticket / ribbon
 
 const ticketPath = (() => {
   const c = W / 2;
@@ -77,7 +79,18 @@ const Barcode: React.FC = () => {
   );
 };
 
-const Half: React.FC<{side: 'right' | 'left'; n: number; word: string; value: number}> = ({side, n, word, value}) => (
+// 0 → 7 / 0 → 6: gentle ease-out (start ≤ 0.45 digit/frame, so every step stays ≥ 2 frames).
+// The last digit lands FADE_FRAMES-1 frames early so its soft crossfade completes exactly on
+// EVENTS.counters.to.
+const COUNT_FROM = EVENTS.counters.from;
+const COUNT_END = EVENTS.counters.to - (FADE_FRAMES - 1);
+const countEase = (t: number) => {
+  const u = clamp(t);
+  return COUNTERS.ticketEase.a * u + COUNTERS.ticketEase.b * (1 - (1 - u) * (1 - u));
+};
+const countAt = (n: number) => (f: number) => n * countEase((f - COUNT_FROM) / (COUNT_END - COUNT_FROM));
+
+const Half: React.FC<{side: 'right' | 'left'; n: number; word: string; col: ColumnState}> = ({side, n, word, col}) => (
   <div
     style={{
       position: 'absolute',
@@ -94,7 +107,7 @@ const Half: React.FC<{side: 'right' | 'left'; n: number; word: string; value: nu
   >
     {side === 'right' ? <Sun /> : <Moon />}
     <div style={{display: 'flex', direction: 'rtl', alignItems: 'center', gap: 18, marginTop: 4}}>
-      <DigitColumn value={value} size={210} color={COLORS.ink} width={150} />
+      <CountDigit c={col.c} rate={col.rate} since={col.since} prev={col.prev} size={210} color={COLORS.ink} width={150} />
       <span style={{fontFamily: FONTS.arabic, fontWeight: 600, fontSize: 86, color: COLORS.ink, lineHeight: 1, marginTop: 26}}>{word}</span>
     </div>
     <span style={{display: 'none'}}>{n}</span>
@@ -103,10 +116,8 @@ const Half: React.FC<{side: 'right' | 'left'; n: number; word: string; value: nu
 
 /** Station 2 — a big boarding ticket; the light thread runs through its eyelet. */
 export const TicketStation: React.FC<{frame: number; cam: CameraState}> = ({frame, cam}) => {
-  const c = EVENTS.counters;
-  const k = easeOutCubic(clamp((frame - c.from) / (c.to - c.from)));
-  const days = TEXT.duration.days * k;
-  const nights = TEXT.duration.nights * k;
+  const days = columnAt(countAt(TEXT.duration.days), frame);
+  const nights = columnAt(countAt(TEXT.duration.nights), frame);
   const float = Math.sin(frame / 31) * 3.5;
   const beat = Math.pow(Math.max(0, Math.sin(frame / 4.6)), 6);
   const heartsRy = Math.sin(frame / 17) * 22;
@@ -114,7 +125,21 @@ export const TicketStation: React.FC<{frame: number; cam: CameraState}> = ({fram
   const sEye = threadS('eyelet');
   const ribbonIn = smoothstep(70, 100, frame);
   return (
-    <Station cam={cam} top={Y0 - 80} bottom={T.ribbonY + 120} focus={{x: T.x, y: T.y + 60}}>
+    <Station cam={cam} top={Y0 - 80} bottom={T.ribbonY + 230} focus={{x: T.x, y: T.y + 60}}>
+      {/* wide glass plane the ticket + ribbon rest on (shows around and below the ribbon) */}
+      <GlassPlinth
+        id="ticket-glass"
+        cx={T.x}
+        cy={GLASS_Y + float * 0.3}
+        rx={500}
+        ry={74}
+        thickness={9}
+        sheen={0.9}
+        shadows={[
+          {dx: 90, dy: 46, rx: 640, ry: 86, opacity: 0.08}, // long diffused shadow, light from the upper left
+          {dx: 0, dy: 26, rx: 520, ry: 54, opacity: 0.08},
+        ]}
+      />
       {/* ticket */}
       <div style={{position: 'absolute', left: X0, top: Y0 + float, width: W, height: H}}>
         <svg
@@ -146,8 +171,8 @@ export const TicketStation: React.FC<{frame: number; cam: CameraState}> = ({fram
           <circle cx={W / 2} cy={EY} r={T.eyeletR + 0.5} fill="none" stroke="rgba(28,28,30,0.25)" strokeWidth={1.5} />
           <path d={`M${W / 2 - 22} ${EY - 12} A25 25 0 0 1 ${W / 2 + 10} ${EY - 24}`} stroke="#FFFFFF" strokeWidth={3} fill="none" strokeLinecap="round" opacity={0.85} />
         </svg>
-        <Half side="right" n={TEXT.duration.days} word={TEXT.duration.daysWord} value={days} />
-        <Half side="left" n={TEXT.duration.nights} word={TEXT.duration.nightsWord} value={nights} />
+        <Half side="right" n={TEXT.duration.days} word={TEXT.duration.daysWord} col={days} />
+        <Half side="left" n={TEXT.duration.nights} word={TEXT.duration.nightsWord} col={nights} />
         <div style={{position: 'absolute', left: 130, top: H - 70}}>
           <Barcode />
         </div>

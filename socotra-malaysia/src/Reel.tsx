@@ -3,6 +3,8 @@ import {AbsoluteFill, Html5Audio, staticFile, useCurrentFrame} from 'remotion';
 import {AUDIO, CAMERA, COLORS, IMAGES, WORLD} from './data';
 import {cameraAt, CameraState} from './lib/camera';
 import {Background} from './layers/Background';
+import {LensGlints, LightRays, MeshGradient} from './layers/Atmosphere';
+import {Dust} from './layers/Dust';
 import {Foreground} from './layers/Foreground';
 import {PlaneRider, ThreadLine} from './layers/Thread';
 import {TitleStation} from './stations/Title';
@@ -29,6 +31,9 @@ export const Reel: React.FC<{withAudio?: boolean}> = ({withAudio = true}) => {
   const cam = cameraAt(frame);
   return (
     <AbsoluteFill style={{background: `linear-gradient(180deg, #F9F8F5 0%, ${COLORS.pearl} 45%, #F3F1EC 100%)`, overflow: 'hidden'}}>
+      {/* living atmosphere, screen space: pastel mesh + slow diagonal light shafts */}
+      <MeshGradient frame={frame} cam={cam} />
+      <LightRays frame={frame} cam={cam} />
       <div style={{position: 'absolute', inset: 0, perspective: CAMERA.perspective, perspectiveOrigin: '540px 960px'}}>
         <div
           style={{
@@ -43,6 +48,7 @@ export const Reel: React.FC<{withAudio?: boolean}> = ({withAudio = true}) => {
           </Layer>
           <Layer transform={worldTransform(cam)}>
             <ThreadLine frame={frame} cam={cam} />
+            <Dust frame={frame} cam={cam} />
             <TitleStation frame={frame} cam={cam} />
             <TicketStation frame={frame} cam={cam} />
             <StampsStation frame={frame} cam={cam} />
@@ -56,9 +62,11 @@ export const Reel: React.FC<{withAudio?: boolean}> = ({withAudio = true}) => {
           </Layer>
         </div>
       </div>
-      {/* warm vignette + near-invisible canvas grain */}
-      <AbsoluteFill style={{background: 'radial-gradient(ellipse 75% 60% at 50% 48%, rgba(0,0,0,0) 60%, rgba(120,104,80,0.07) 100%)'}} />
-      <AbsoluteFill style={{backgroundImage: `url(${staticFile(IMAGES.grain)})`, backgroundSize: '512px 512px', opacity: 0.05}} />
+      {/* lens glints when the camera lands on a station (above the world, under vignette / grain) */}
+      <LensGlints frame={frame} cam={cam} />
+      {/* very light warm vignette (corners darken ~3.5 %) + near-invisible canvas grain */}
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse 75% 60% at 50% 48%, rgba(0,0,0,0) 58%, rgba(128,106,78,0.075) 100%)'}} />
+      <AbsoluteFill style={{backgroundImage: `url(${staticFile(IMAGES.grain)})`, backgroundSize: '512px 512px', opacity: 0.06}} />
       {withAudio && <Html5Audio src={staticFile(AUDIO.soundtrack)} />}
     </AbsoluteFill>
   );

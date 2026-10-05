@@ -33,6 +33,9 @@ export const COLORS = {
   glassFill: 'rgba(255,255,255,0.42)',
   glassEdge: 'rgba(255,255,255,0.95)',
   glassTint: 'rgba(232,217,181,0.20)',
+  shadowRgb: '58,48,36', // warm graphite for long soft shadows (never cold, never green)
+  rayTint: '#FAE8D6', // warm shoulder of the light rays
+  rayShade: '#967850', // faint warm-shadow edges that make the rays read on the light base
 };
 
 // ───────────────────────────── living background ─────────────────────────────
@@ -58,6 +61,24 @@ export const ATMOSPHERE = {
   blobOpacity: 0.55,
   rayColor: '#FFF7E6',
   rayOpacity: 0.22,
+  rayShadeOpacity: 0.036,
+  rayCoreOpacity: 0.024, // narrow additive core
+  chromaTarget: 52, // every pastel pulled towards one common distance from pearl (even "life")
+  meshChroma: {sky: 76} as Partial<Record<'warm' | 'sky' | 'gold' | 'finale', number>>, // cool pastels need a bit more
+  slotOverride: {sky: {2: 1}} as Partial<Record<'warm' | 'sky' | 'gold' | 'finale', Record<number, number>>>, // no peach next to blue
+  // screen position of each lens glint source at its landing frame (upper band, off the main copy)
+  glintSpots: {
+    31: [700, 520],
+    98: [790, 430],
+    175: [770, 330],
+    208: [310, 330],
+    240: [770, 330],
+    265: [300, 410],
+    327: [790, 400],
+    390: [300, 590],
+    448: [780, 320],
+    495: [800, 330],
+  } as Record<number, [number, number]>,
   // lens glint when the camera lands on a station
   glints: [31, 98, 175, 208, 240, 265, 327, 390, 448, 495],
 };
@@ -137,6 +158,8 @@ export const EVENTS = {
   priceShine: 448,
   coins: {from: 430, to: 480},
   ctaTrace: {from: 490, to: 512},
+  // the next stamp's target (glass, dashed ring) fades in only after the camera left the previous stop
+  stampTargets: {prevStops: ['ticket', 'stamp1', 'stamp2'], preLead: 30, preRamp: 12},
   planeVisible: [148, 256],
 };
 
@@ -146,14 +169,28 @@ export const WORLD = {width: 1080, height: 11100, bgParallax: 0.4, fgParallax: 1
 export const LAYOUT = {
   // title station is laid out as one screen (1080 x 1920) whose top sits at world y = top
   // towers 350→1180 (base on a glass floor + faint reflection), clear gap, then the title ink ≈ 1275→1510
-  title: {top: 8420, companyY: 300, towersTop: 350, towersH: 830, titleY: 1372, titleSize: 260},
-  ticket: {x: 540, y: 7910, w: 920, h: 520, eyeletY: 7740, eyeletR: 20, ribbonY: 8236},
+  title: {
+    top: 8420,
+    companyY: 300,
+    companySize: 54,
+    towersTop: 350,
+    towersH: 830,
+    titleY: 1372,
+    titleSize: 260,
+    floor: {dy: -3, rx: 285, ry: 29, th: 5}, // glass floor under the tower base
+    reflection: {h: 64, opacity: 0.18},
+    // while the camera is still zoomed out (frames 0-31) these on-screen minimums are enforced
+    minCompanyPx: 53,
+    minTitlePx: 242,
+  },
+  ticket: {x: 540, y: 7910, w: 920, h: 520, eyeletY: 7740, eyeletR: 20, ribbonY: 8236, glassDy: 14},
   stamps: [
     {x: 400, y: 7090, rot: -5},
     {x: 680, y: 6520, rot: 4},
     {x: 420, y: 5950, rot: -3},
   ],
   stampR: 380,
+  stampGlass: {dy: -6, rx: 300, ry: 58, th: 9}, // plinth at each stamp's bottom edge (stamp-local)
   features: [
     {x: 350, y: 5230},
     {x: 730, y: 4830},
@@ -164,10 +201,26 @@ export const LAYOUT = {
     {x: 350, y: 2830},
   ],
   discD: 360,
+  featureGlass: {dy: 2, rx: 150, ry: 26, th: 6}, // small glass ellipse each disc hovers over
+  featureLabelGap: 46,
   iconSize: 280, // icon box; the drawn object itself fills 60-70 % of the disc
-  price: {x: 540, y: 2030, d: 820, orbitR: 470},
+  price: {x: 540, y: 2030, d: 820, orbitR: 470, glassDy: 18},
   // booking station is laid out as one screen whose top sits at world y = top
-  booking: {top: -450, ctaY: 520, ctaW: 880, ctaH: 156, rowsTop: 700, rowH: 88, rowGap: 30, companyY: 1300},
+  booking: {top: -450, ctaY: 520, ctaW: 880, ctaH: 156, rowsTop: 700, rowH: 88, rowGap: 30, companyY: 1300, panel: {x: 96, w: 888, padY: 38, r: 40}},
+};
+
+// depth of field: blur below `min` px is skipped (invisible but costly), ramps back by `ramp`, capped at `max`
+export const DOF = {min: 0.6, ramp: 1.2, max: 2.4};
+
+// counters (ticket 0→7 / 0→6, price 0,000→5,950): whole glyphs only, never clipped
+export const COUNTERS = {
+  fadeFrames: 2, // soft switch length when a digit changes slowly
+  fastRate: 0.5, // digit/frame above which digits switch hard, one whole glyph per frame
+  driftEm: 0.12,
+  // ticket ease(u) = a·u + b·(1-(1-u)^2) — keeps every step ≥ 2 frames
+  ticketEase: {a: 0.3, b: 0.7},
+  // price ease(u) = a·u + b·(1-(1-u)^3) — small residual end speed so 5,950 lands crisp on the beat
+  priceEase: {a: 0.04, b: 0.96},
 };
 
 // ───────────────────────────── camera ─────────────────────────────
@@ -252,7 +305,7 @@ export const THREAD: {points: ThreadPoint[]; head: [number, string, number][]} =
   ],
   // where the glowing head of the thread is: [frame, anchor id, offset px along the thread]
   head: [
-    [0, 'titleIn', -260],
+    [0, 'titleIn', 0], // head already above the bottom Reels UI band on frame 0
     [30, 'titleOut', 0],
     [60, 'titleOut', 170],
     [95, 'eyelet', 0],
