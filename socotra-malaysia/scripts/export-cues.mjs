@@ -13,6 +13,7 @@ const out = {
   sections: data.SECTIONS,
   events: data.EVENTS,
   ...data.AUDIO_CUES,
+  music: data.MUSIC,
 };
 fs.writeFileSync(path.join(here, 'cues.json'), JSON.stringify(out, null, 2));
 console.log('cues.json written:', Object.keys(out).join(', '));

@@ -31,34 +31,34 @@
     "titleShine": 34,
     "counters": {
       "from": 100,
-      "to": 120
+      "to": 128
     },
     "stampHits": [
-      171,
-      203,
-      235
+      173,
+      206,
+      239
     ],
     "featureFocus": [
-      268,
-      289,
-      310,
-      331,
-      352,
-      373,
-      394
+      265,
+      285,
+      306,
+      327,
+      348,
+      369,
+      390
     ],
     "priceCount": {
       "from": 422,
-      "to": 452
+      "to": 448
     },
-    "priceShine": 452,
+    "priceShine": 448,
     "coins": {
-      "from": 432,
-      "to": 486
+      "from": 430,
+      "to": 480
     },
     "ctaTrace": {
-      "from": 482,
-      "to": 506
+      "from": 490,
+      "to": 512
     },
     "planeVisible": [
       148,
@@ -66,38 +66,53 @@
     ]
   },
   "ticks": [
-    32,
+    31,
     98,
-    268,
-    289,
-    310,
-    331,
-    352,
-    373,
-    394,
-    422,
-    495
+    265,
+    285,
+    306,
+    327,
+    348,
+    369,
+    390,
+    423,
+    490
   ],
   "pops": [
-    171,
-    203,
-    235
+    173,
+    206,
+    239
   ],
   "rises": [
     {
       "from": 100,
-      "to": 120,
+      "to": 128,
       "steps": 7
     },
     {
       "from": 422,
-      "to": 452,
+      "to": 448,
       "steps": 12
     }
   ],
   "glass": [
-    452
+    448
   ],
-  "bpm": 92,
-  "sfxBelowMusicDb": 10
+  "bpm": 108,
+  "sfxBelowMusicDb": 9,
+  "targetLufs": -14,
+  "music": {
+    "bpm": 108,
+    "offsetFrames": -2,
+    "drumsInBeat": 6,
+    "buildBeat": 16,
+    "priceBeat": 24,
+    "climaxBeat": 27,
+    "finalBeat": 30,
+    "userMusic": [
+      "public/music.mp3",
+      "assets/music.mp3",
+      "../assets/music.mp3"
+    ]
+  }
 }

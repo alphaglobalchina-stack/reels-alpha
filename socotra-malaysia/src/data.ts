@@ -28,6 +28,38 @@ export const COLORS = {
   ink: '#1C1C1E', // text + the price disc only
   inkSoft: '#6B6B70', // secondary text
   shadow: 'rgba(28,28,30,0.10)',
+  threadCore: '#C2A062', // thicker, warmer core so the thread reads from the first second
+  threadGlow: '#EBD6A6',
+  glassFill: 'rgba(255,255,255,0.42)',
+  glassEdge: 'rgba(255,255,255,0.95)',
+  glassTint: 'rgba(232,217,181,0.20)',
+};
+
+// ───────────────────────────── living background ─────────────────────────────
+// Pastel mesh-gradient palettes (4 blobs each). No green anywhere: every colour is
+// peach / champagne / pale sky / lavender. The palette cross-fades by frame.
+export const ATMOSPHERE = {
+  palettes: {
+    warm: ['#F8DCCB', '#F2E2BE', '#EEDDF0', '#FBEBDD'], // title + ticket: peach, champagne, lavender blush
+    sky: ['#D4E2F7', '#E3DBF5', '#F6E4D8', '#DCE6F8'], // cities + features: pale sky, lavender
+    gold: ['#EFD9A6', '#F6DCC4', '#F3E6C5', '#E8DDF1'], // price: champagne gold
+    finale: ['#F4E3C3', '#F8DFD0', '#E6DEF4', '#F7EEDC'], // booking: champagne + peach
+  },
+  // [frame, palette]
+  keys: [
+    [0, 'warm'],
+    [150, 'warm'],
+    [182, 'sky'],
+    [395, 'sky'],
+    [420, 'gold'],
+    [470, 'gold'],
+    [500, 'finale'],
+  ] as [number, 'warm' | 'sky' | 'gold' | 'finale'][],
+  blobOpacity: 0.55,
+  rayColor: '#FFF7E6',
+  rayOpacity: 0.22,
+  // lens glint when the camera lands on a station
+  glints: [31, 98, 175, 208, 240, 265, 327, 390, 448, 495],
 };
 
 // ───────────────────────────── fonts ─────────────────────────────
@@ -68,7 +100,7 @@ export const TEXT = {
 // ───────────────────────────── images ─────────────────────────────
 // Prepared by scripts/prep_images.py from assets-src/ (see README for the audit).
 export const IMAGES = {
-  towers: {file: 'img/towers-cutout.png', w: 342, h: 854},
+  towers: {file: 'img/towers-cutout.png', w: 342, h: 834}, // full towers down to the podium, no base fade
   logo: {file: 'img/logo-emblem.png', w: 279, h: 335},
   grain: 'img/grain.png',
   // all three are 1122 x 1402 (4:5) and are shown whole inside a 4:5 window
@@ -97,13 +129,14 @@ export const SECTIONS = {
 
 export const EVENTS = {
   titleShine: 34,
-  counters: {from: 100, to: 120}, // 0 → 7 / 0 → 6
-  stampHits: [171, 203, 235], // each stamp lands as the camera arrives
-  featureFocus: [268, 289, 310, 331, 352, 373, 394], // ≈ 0.7 s per feature
-  priceCount: {from: 422, to: 452},
-  priceShine: 452,
-  coins: {from: 432, to: 486},
-  ctaTrace: {from: 482, to: 506},
+  counters: {from: 100, to: 128}, // 0 → 7 / 0 → 6 (digit switch with soft fade, never clipped)
+  // everything below sits on the 108 BPM grid (beat = 16.667 frames, beat 6 = frame 98)
+  stampHits: [173, 206, 239], // off-beats 10.5 / 12.5 / 14.5
+  featureFocus: [265, 285, 306, 327, 348, 369, 390], // every 1.25 beats ≈ 0.69 s
+  priceCount: {from: 422, to: 448}, // lands on beat 27 = musical climax
+  priceShine: 448,
+  coins: {from: 430, to: 480},
+  ctaTrace: {from: 490, to: 512},
   planeVisible: [148, 256],
 };
 
@@ -112,7 +145,8 @@ export const WORLD = {width: 1080, height: 11100, bgParallax: 0.4, fgParallax: 1
 
 export const LAYOUT = {
   // title station is laid out as one screen (1080 x 1920) whose top sits at world y = top
-  title: {top: 8420, companyY: 300, towersTop: 340, towersH: 1080, titleY: 1290, titleSize: 270},
+  // towers 350→1180 (base on a glass floor + faint reflection), clear gap, then the title ink ≈ 1275→1510
+  title: {top: 8420, companyY: 300, towersTop: 350, towersH: 830, titleY: 1372, titleSize: 260},
   ticket: {x: 540, y: 7910, w: 920, h: 520, eyeletY: 7740, eyeletR: 20, ribbonY: 8236},
   stamps: [
     {x: 400, y: 7090, rot: -5},
@@ -152,20 +186,21 @@ export type CamPoint = {
 
 export const CAMERA: {points: CamPoint[]; maxRoll: number; maxTilt: number; perspective: number} = {
   points: [
-    {id: 'start', x: 540, y: 9760, zoom: 1.08, arrive: 0, leave: 0, drift: 16},
+    // starts 90 px low and zoomed out so the whole title screen (incl. the company line) is inside the safe zone on frame 0
+    {id: 'start', x: 540, y: 9470, zoom: 0.86, arrive: 0, leave: 0, drift: 3},
     {id: 'title', x: 540, y: 9380, zoom: 1.0, arrive: 32, leave: 60, drift: 0.9},
     {id: 'w1', x: 610, y: 8720},
     {id: 'ticket', x: 540, y: 8025, zoom: 1.0, arrive: 98, leave: 150, drift: 0.7},
-    {id: 'stamp1', x: 456, y: 7120, zoom: 1.1, arrive: 174, leave: 186, drift: 1.4},
-    {id: 'stamp2', x: 624, y: 6550, zoom: 1.1, arrive: 206, leave: 218, drift: 1.4},
-    {id: 'stamp3', x: 468, y: 5980, zoom: 1.1, arrive: 238, leave: 248, drift: 1.4},
-    {id: 'f1', x: 436, y: 5325, zoom: 1.0, arrive: 268, leave: 268, drift: 9},
-    {id: 'f2', x: 644, y: 4925, zoom: 1.0, arrive: 289, leave: 289, drift: 9},
-    {id: 'f3', x: 436, y: 4525, zoom: 1.0, arrive: 310, leave: 310, drift: 9},
-    {id: 'f4', x: 644, y: 4125, zoom: 1.0, arrive: 331, leave: 331, drift: 9},
-    {id: 'f5', x: 436, y: 3725, zoom: 1.0, arrive: 352, leave: 352, drift: 9},
-    {id: 'f6', x: 644, y: 3325, zoom: 1.0, arrive: 373, leave: 373, drift: 9},
-    {id: 'f7', x: 436, y: 2925, zoom: 1.0, arrive: 394, leave: 394, drift: 9},
+    {id: 'stamp1', x: 456, y: 7120, zoom: 1.1, arrive: 175, leave: 187, drift: 1.4},
+    {id: 'stamp2', x: 624, y: 6550, zoom: 1.1, arrive: 208, leave: 220, drift: 1.4},
+    {id: 'stamp3', x: 468, y: 5980, zoom: 1.1, arrive: 240, leave: 248, drift: 1.4},
+    {id: 'f1', x: 436, y: 5325, zoom: 1.0, arrive: 265, leave: 265, drift: 9},
+    {id: 'f2', x: 644, y: 4925, zoom: 1.0, arrive: 285, leave: 285, drift: 9},
+    {id: 'f3', x: 436, y: 4525, zoom: 1.0, arrive: 306, leave: 306, drift: 9},
+    {id: 'f4', x: 644, y: 4125, zoom: 1.0, arrive: 327, leave: 327, drift: 9},
+    {id: 'f5', x: 436, y: 3725, zoom: 1.0, arrive: 348, leave: 348, drift: 9},
+    {id: 'f6', x: 644, y: 3325, zoom: 1.0, arrive: 369, leave: 369, drift: 9},
+    {id: 'f7', x: 436, y: 2925, zoom: 1.0, arrive: 390, leave: 390, drift: 9},
     {id: 'w2', x: 500, y: 2480},
     {id: 'price', x: 540, y: 2050, zoom: 1.0, arrive: 422, leave: 460, drift: 0.6},
     {id: 'w3', x: 600, y: 1240},
@@ -222,32 +257,45 @@ export const THREAD: {points: ThreadPoint[]; head: [number, string, number][]} =
     [60, 'titleOut', 170],
     [95, 'eyelet', 0],
     [148, 'eyelet', 80],
-    [171, 's1', 0],
-    [203, 's2', 0],
-    [235, 's3', 0],
-    [266, 'f1', 230],
-    [287, 'f2', 230],
-    [308, 'f3', 230],
-    [329, 'f4', 230],
-    [350, 'f5', 230],
-    [371, 'f6', 230],
-    [392, 'f7', 230],
+    [173, 's1', 0],
+    [206, 's2', 0],
+    [239, 's3', 0],
+    [263, 'f1', 230],
+    [283, 'f2', 230],
+    [304, 'f3', 230],
+    [325, 'f4', 230],
+    [346, 'f5', 230],
+    [367, 'f6', 230],
+    [388, 'f7', 230],
     [422, 'orbitL', 0],
     [460, 'orbitR', 0],
-    [492, 'end', 0],
+    [490, 'end', 0],
   ],
 };
 
 // ───────────────────────────── audio cues (frames) ─────────────────────────────
 // Read by scripts/export-cues.mjs → scripts/cues.json → scripts/make_audio.py
 export const AUDIO_CUES = {
-  ticks: [32, 98, ...EVENTS.featureFocus, 422, 495],
-  pops: EVENTS.stampHits,
+  ticks: [31, 98, ...EVENTS.featureFocus, 423, 490], // short tonal pluck / chime per station
+  pops: EVENTS.stampHits, // tonal stamp knock (no noise)
   rises: [
     {from: EVENTS.counters.from, to: EVENTS.counters.to, steps: 7},
     {from: EVENTS.priceCount.from, to: EVENTS.priceCount.to, steps: 12},
   ],
   glass: [EVENTS.priceShine],
-  bpm: 92,
-  sfxBelowMusicDb: 10,
+  bpm: 108,
+  sfxBelowMusicDb: 9,
+  targetLufs: -14,
+};
+
+// Music structure on the beat grid. frame(beat) = beat * 30 * 60 / bpm + offsetFrames
+export const MUSIC = {
+  bpm: 108,
+  offsetFrames: -2, // beat 6 lands exactly on frame 98 (camera reaches the ticket)
+  drumsInBeat: 6, // kick + clap enter at the ticket
+  buildBeat: 16, // arpeggio to 16ths, layers double across the features
+  priceBeat: 24, // tension (Dm9 → G13sus)
+  climaxBeat: 27, // full strong chord + kick when 5,950 lands (frame 448)
+  finalBeat: 30, // calm final chord (frame 498), fades over the last second
+  userMusic: ['public/music.mp3', 'assets/music.mp3', '../assets/music.mp3'],
 };
