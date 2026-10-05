@@ -4,6 +4,8 @@ import {loadFonts} from './fonts';
 import {detectAssets} from './lib/assets';
 import {Reel1, reel1Defaults, reel1Frames} from './reels/Reel1';
 import {theme} from './theme';
+import {MalaysiaReel} from './malaysia/MalaysiaReel';
+import {DURATION as MY_DURATION, FPS as MY_FPS, H as MY_H, W as MY_W} from './malaysia/data';
 import {ReelProps} from './types';
 
 loadFonts();
@@ -27,5 +29,6 @@ export const RemotionRoot: React.FC = () => (
         props: {...props, assets: await detectAssets()} as ReelProps,
       })}
     />
+    <Composition id="MalaysiaReel" component={MalaysiaReel} width={MY_W} height={MY_H} fps={MY_FPS} durationInFrames={MY_DURATION} defaultProps={{audio: true}} />
   </>
 );
