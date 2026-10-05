@@ -65,7 +65,7 @@ export const TitleStation: React.FC<{frame: number; cam: CameraState}> = ({frame
           }}
         >
           <Img src={staticFile(IMAGES.logo.file)} style={{height: 84, width: (84 * IMAGES.logo.w) / IMAGES.logo.h}} />
-          <span style={{fontFamily: FONTS.arabic, fontWeight: 600, fontSize: 54, color: COLORS.ink, lineHeight: 1}}>
+          <span style={{fontFamily: FONTS.arabic, fontWeight: 500, fontSize: 54, color: COLORS.ink, lineHeight: 1}}>
             {TEXT.companyAr}
           </span>
         </div>

@@ -40,7 +40,7 @@ export const FONTS = {
 
 // ───────────────────────────── copy (verbatim) ─────────────────────────────
 export const TEXT = {
-  companyAr: 'سقطرى للسياحة والسفر', // ى (alef maqsura) — never "سقطري"
+  companyAr: 'سقطرى للسياحة والسفر', // ends with alef maqsura ى (U+0649), not ya ي
   companyEn: 'Socotra Travel & Tours',
   title: 'ماليزيا',
   duration: {days: 7, daysWord: 'أيام', nights: 6, nightsWord: 'ليال'}, // 7 أيام | 6 ليال
@@ -100,9 +100,9 @@ export const EVENTS = {
   counters: {from: 100, to: 120}, // 0 → 7 / 0 → 6
   stampHits: [171, 203, 235], // each stamp lands as the camera arrives
   featureFocus: [268, 289, 310, 331, 352, 373, 394], // ≈ 0.7 s per feature
-  priceCount: {from: 426, to: 464},
-  priceShine: 464,
-  coins: {from: 436, to: 500},
+  priceCount: {from: 422, to: 452},
+  priceShine: 452,
+  coins: {from: 432, to: 486},
   ctaTrace: {from: 482, to: 506},
   planeVisible: [148, 256],
 };
@@ -121,19 +121,19 @@ export const LAYOUT = {
   ],
   stampR: 380,
   features: [
-    {x: 320, y: 5230},
-    {x: 760, y: 4900},
-    {x: 320, y: 4570},
-    {x: 760, y: 4240},
-    {x: 320, y: 3910},
-    {x: 760, y: 3580},
-    {x: 320, y: 3250},
+    {x: 350, y: 5230},
+    {x: 730, y: 4830},
+    {x: 350, y: 4430},
+    {x: 730, y: 4030},
+    {x: 350, y: 3630},
+    {x: 730, y: 3230},
+    {x: 350, y: 2830},
   ],
   discD: 360,
-  iconSize: 216, // 60 % of the disc
-  price: {x: 540, y: 2450, d: 820, orbitR: 470},
+  iconSize: 280, // icon box; the drawn object itself fills 60-70 % of the disc
+  price: {x: 540, y: 2030, d: 820, orbitR: 470},
   // booking station is laid out as one screen whose top sits at world y = top
-  booking: {top: 140, ctaY: 520, ctaW: 860, ctaH: 150, rowsTop: 668, rowH: 88, rowGap: 22, companyY: 1238},
+  booking: {top: -450, ctaY: 520, ctaW: 880, ctaH: 156, rowsTop: 700, rowH: 88, rowGap: 30, companyY: 1300},
 };
 
 // ───────────────────────────── camera ─────────────────────────────
@@ -159,17 +159,17 @@ export const CAMERA: {points: CamPoint[]; maxRoll: number; maxTilt: number; pers
     {id: 'stamp1', x: 456, y: 7120, zoom: 1.1, arrive: 174, leave: 186, drift: 1.4},
     {id: 'stamp2', x: 624, y: 6550, zoom: 1.1, arrive: 206, leave: 218, drift: 1.4},
     {id: 'stamp3', x: 468, y: 5980, zoom: 1.1, arrive: 238, leave: 248, drift: 1.4},
-    {id: 'f1', x: 441, y: 5315, zoom: 1.12, arrive: 268, leave: 268, drift: 9},
-    {id: 'f2', x: 639, y: 4985, zoom: 1.12, arrive: 289, leave: 289, drift: 9},
-    {id: 'f3', x: 441, y: 4655, zoom: 1.12, arrive: 310, leave: 310, drift: 9},
-    {id: 'f4', x: 639, y: 4325, zoom: 1.12, arrive: 331, leave: 331, drift: 9},
-    {id: 'f5', x: 441, y: 3995, zoom: 1.12, arrive: 352, leave: 352, drift: 9},
-    {id: 'f6', x: 639, y: 3665, zoom: 1.12, arrive: 373, leave: 373, drift: 9},
-    {id: 'f7', x: 441, y: 3335, zoom: 1.12, arrive: 394, leave: 394, drift: 9},
-    {id: 'w2', x: 500, y: 2900},
-    {id: 'price', x: 540, y: 2470, zoom: 1.0, arrive: 424, leave: 462, drift: 0.6},
-    {id: 'w3', x: 600, y: 1760},
-    {id: 'booking', x: 540, y: 1100, zoom: 1.0, arrive: 495, leave: 540, drift: 0},
+    {id: 'f1', x: 436, y: 5325, zoom: 1.0, arrive: 268, leave: 268, drift: 9},
+    {id: 'f2', x: 644, y: 4925, zoom: 1.0, arrive: 289, leave: 289, drift: 9},
+    {id: 'f3', x: 436, y: 4525, zoom: 1.0, arrive: 310, leave: 310, drift: 9},
+    {id: 'f4', x: 644, y: 4125, zoom: 1.0, arrive: 331, leave: 331, drift: 9},
+    {id: 'f5', x: 436, y: 3725, zoom: 1.0, arrive: 352, leave: 352, drift: 9},
+    {id: 'f6', x: 644, y: 3325, zoom: 1.0, arrive: 373, leave: 373, drift: 9},
+    {id: 'f7', x: 436, y: 2925, zoom: 1.0, arrive: 394, leave: 394, drift: 9},
+    {id: 'w2', x: 500, y: 2480},
+    {id: 'price', x: 540, y: 2050, zoom: 1.0, arrive: 422, leave: 460, drift: 0.6},
+    {id: 'w3', x: 600, y: 1240},
+    {id: 'booking', x: 540, y: 510, zoom: 1.0, arrive: 495, leave: 540, drift: 0},
   ],
   maxRoll: 6, // degrees, from the spline heading
   maxTilt: 5, // degrees, 3D pitch/yaw from the spline velocity
@@ -198,22 +198,22 @@ export const THREAD: {points: ThreadPoint[]; head: [number, string, number][]} =
     {x: 560, y: 6240},
     {x: 872, y: 5950, id: 's3'},
     {x: 780, y: 5560},
-    {x: 320, y: 5230, id: 'f1'}, // discs are beads on the thread
-    {x: 760, y: 4900, id: 'f2'},
-    {x: 320, y: 4570, id: 'f3'},
-    {x: 760, y: 4240, id: 'f4'},
-    {x: 320, y: 3910, id: 'f5'},
-    {x: 760, y: 3580, id: 'f6'},
-    {x: 320, y: 3250, id: 'f7'},
-    {x: 205, y: 2790},
-    {x: 70, y: 2450, id: 'orbitL'}, // half orbit around the price disc
-    {x: 208, y: 2118},
-    {x: 540, y: 1980, id: 'orbitTop'},
-    {x: 872, y: 2118, id: 'orbitR'},
-    {x: 1002, y: 1820},
-    {x: 1016, y: 1400},
-    {x: 1012, y: 900},
-    {x: 972, y: 660, id: 'end'}, // ends in the right cap of the "احجز الآن" bar
+    {x: 350, y: 5230, id: 'f1'}, // discs are beads on the thread
+    {x: 730, y: 4830, id: 'f2'},
+    {x: 350, y: 4430, id: 'f3'},
+    {x: 730, y: 4030, id: 'f4'},
+    {x: 350, y: 3630, id: 'f5'},
+    {x: 730, y: 3230, id: 'f6'},
+    {x: 350, y: 2830, id: 'f7'},
+    {x: 205, y: 2370},
+    {x: 70, y: 2030, id: 'orbitL'}, // half orbit around the price disc
+    {x: 208, y: 1698},
+    {x: 540, y: 1560, id: 'orbitTop'},
+    {x: 872, y: 1698, id: 'orbitR'},
+    {x: 1002, y: 1400},
+    {x: 1018, y: 900},
+    {x: 1014, y: 330},
+    {x: 984, y: 70, id: 'end'}, // ends at the right cap of the "احجز الآن" bar
   ],
   // where the glowing head of the thread is: [frame, anchor id, offset px along the thread]
   head: [
@@ -225,15 +225,15 @@ export const THREAD: {points: ThreadPoint[]; head: [number, string, number][]} =
     [171, 's1', 0],
     [203, 's2', 0],
     [235, 's3', 0],
-    [266, 'f1', 0],
-    [287, 'f2', 0],
-    [308, 'f3', 0],
-    [329, 'f4', 0],
-    [350, 'f5', 0],
-    [371, 'f6', 0],
-    [392, 'f7', 0],
-    [424, 'orbitL', 0],
-    [462, 'orbitR', 0],
+    [266, 'f1', 230],
+    [287, 'f2', 230],
+    [308, 'f3', 230],
+    [329, 'f4', 230],
+    [350, 'f5', 230],
+    [371, 'f6', 230],
+    [392, 'f7', 230],
+    [422, 'orbitL', 0],
+    [460, 'orbitR', 0],
     [492, 'end', 0],
   ],
 };
@@ -241,7 +241,7 @@ export const THREAD: {points: ThreadPoint[]; head: [number, string, number][]} =
 // ───────────────────────────── audio cues (frames) ─────────────────────────────
 // Read by scripts/export-cues.mjs → scripts/cues.json → scripts/make_audio.py
 export const AUDIO_CUES = {
-  ticks: [32, 98, ...EVENTS.featureFocus, 424, 495],
+  ticks: [32, 98, ...EVENTS.featureFocus, 422, 495],
   pops: EVENTS.stampHits,
   rises: [
     {from: EVENTS.counters.from, to: EVENTS.counters.to, steps: 7},

@@ -188,7 +188,7 @@ export const TicketStation: React.FC<{frame: number; cam: CameraState}> = ({fram
             justifyContent: 'center',
             direction: 'rtl',
             fontFamily: FONTS.arabic,
-            fontWeight: 600,
+            fontWeight: 500,
             fontSize: 56,
             color: COLORS.ink,
             lineHeight: 1,

@@ -88,9 +88,9 @@ export const PlaneRider: React.FC<{frame: number}> = ({frame}) => {
   const ang2 = (threadCurve.angleAt(head + 40) * 180) / Math.PI + 90;
   const turn = clamp(((((ang2 - ang + 540) % 360) - 180) / 25), -1, 1);
   const bank = 1 - 0.28 * Math.abs(turn);
-  const s = 0.6 + 0.4 * vis;
+  const s = 0.85 + 0.55 * vis;
   return (
-    <WindowSvg win={{x: Math.floor(p.x - 160), y: Math.floor(p.y - 160), w: 320, h: 320}}>
+    <WindowSvg win={{x: Math.floor(p.x - 220), y: Math.floor(p.y - 220), w: 440, h: 440}}>
       <g transform={`translate(${p.x} ${p.y}) rotate(${ang}) scale(${s})`} opacity={vis}>
         {/* cast shadow on the page */}
         <g transform="translate(26 34) scale(0.96)" opacity={0.16}>

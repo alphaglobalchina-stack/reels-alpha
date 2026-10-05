@@ -48,13 +48,13 @@
       394
     ],
     "priceCount": {
-      "from": 426,
-      "to": 464
+      "from": 422,
+      "to": 452
     },
-    "priceShine": 464,
+    "priceShine": 452,
     "coins": {
-      "from": 436,
-      "to": 500
+      "from": 432,
+      "to": 486
     },
     "ctaTrace": {
       "from": 482,
@@ -75,7 +75,7 @@
     352,
     373,
     394,
-    424,
+    422,
     495
   ],
   "pops": [
@@ -90,13 +90,13 @@
       "steps": 7
     },
     {
-      "from": 426,
-      "to": 464,
+      "from": 422,
+      "to": 452,
       "steps": 12
     }
   ],
   "glass": [
-    464
+    452
   ],
   "bpm": 92,
   "sfxBelowMusicDb": 10
