@@ -1,0 +1,103 @@
+{
+  "fps": 30,
+  "frames": 540,
+  "sections": {
+    "title": [
+      0,
+      90
+    ],
+    "ticket": [
+      90,
+      165
+    ],
+    "stamps": [
+      165,
+      255
+    ],
+    "features": [
+      255,
+      405
+    ],
+    "price": [
+      405,
+      480
+    ],
+    "booking": [
+      480,
+      540
+    ]
+  },
+  "events": {
+    "titleShine": 34,
+    "counters": {
+      "from": 100,
+      "to": 120
+    },
+    "stampHits": [
+      171,
+      203,
+      235
+    ],
+    "featureFocus": [
+      268,
+      289,
+      310,
+      331,
+      352,
+      373,
+      394
+    ],
+    "priceCount": {
+      "from": 426,
+      "to": 464
+    },
+    "priceShine": 464,
+    "coins": {
+      "from": 436,
+      "to": 500
+    },
+    "ctaTrace": {
+      "from": 482,
+      "to": 506
+    },
+    "planeVisible": [
+      148,
+      256
+    ]
+  },
+  "ticks": [
+    32,
+    98,
+    268,
+    289,
+    310,
+    331,
+    352,
+    373,
+    394,
+    424,
+    495
+  ],
+  "pops": [
+    171,
+    203,
+    235
+  ],
+  "rises": [
+    {
+      "from": 100,
+      "to": 120,
+      "steps": 7
+    },
+    {
+      "from": 426,
+      "to": 464,
+      "steps": 12
+    }
+  ],
+  "glass": [
+    464
+  ],
+  "bpm": 92,
+  "sfxBelowMusicDb": 10
+}

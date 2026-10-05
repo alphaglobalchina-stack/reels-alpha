@@ -1,0 +1,10 @@
+{
+  "music_source": "generated (numpy/scipy)",
+  "integrated_lufs": -16.0,
+  "true_peak_dbtp": -2.76,
+  "sample_peak_dbfs": -2.79,
+  "clipped_samples": 0,
+  "music_lufs_pre": -12.34,
+  "sfx_vs_music_db": -10.0,
+  "last_100ms_peak_dbfs": -46.9
+}
